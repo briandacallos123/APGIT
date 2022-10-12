@@ -28,7 +28,9 @@ import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
-import { _invoices } from '../../../_mock';
+// import { _awardType } from '../../../_mock';
+// import { _awardType } from '../../../_mock/customTable/leave';
+import { _awardType } from '../../../_mock/customTable/award';
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -38,7 +40,10 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableRow, InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+
+// import TypeAwards from '../../components/LeaveTables/LeaveTypeAwards';
+import TypeAwards from '../../components/awards/awardType';
 
 // ----------------------------------------------------------------------
 
@@ -52,18 +57,16 @@ const SERVICE_OPTIONS = [
 ];
 
 const TABLE_HEAD = [
-  { id: 'invoiceNumber', label: 'Client', align: 'left' },
-  { id: 'createDate', label: 'Create', align: 'left' },
-  { id: 'dueDate', label: 'Due', align: 'left' },
-  { id: 'price', label: 'Amount', align: 'center', width: 140 },
-  { id: 'sent', label: 'Sent', align: 'center', width: 140 },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: 'Name', label: 'ID', align: 'left', width: 1000 },
+  { id: 'Balance', label: 'Name', align: 'center', width: 1000 },
+  { id: 'Department', label: 'Status', align: 'center', width: 1000 },
+  { id: 'Shift', label: 'Action', align: 'right', width: 1000 },
   { id: '' },
 ];
 
 // ----------------------------------------------------------------------
 
-export default function InvoiceList() {
+export default function AwardType() {
   const theme = useTheme();
 
   const { themeStretch } = useSettings();
@@ -89,7 +92,7 @@ export default function InvoiceList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_invoices);
+  const [tableData, setTableData] = useState(_awardType);
 
   const [filterName, setFilterName] = useState('');
 
@@ -160,11 +163,11 @@ export default function InvoiceList() {
   const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
 
   const TABS = [
-    { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'all', label: 'Account', color: 'info', count: tableData.length },
+    { value: 'paid', label: 'Amount', color: 'success', count: getLengthByStatus('paid') },
+    { value: 'unpaid', label: 'Type', color: 'warning', count: getLengthByStatus('unpaid') },
+    { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
+    { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
   ];
 
   return (
@@ -199,10 +202,10 @@ export default function InvoiceList() {
               <InvoiceAnalytic
                 title="Total"
                 total={tableData.length}
-                percent={100}
+                percent={25}
                 price={sumBy(tableData, 'totalPrice')}
                 icon="ic:round-receipt"
-                color={theme.palette.info.main}
+                color={theme.palette.error.main}
               />
               <InvoiceAnalytic
                 title="Paid"
@@ -210,7 +213,7 @@ export default function InvoiceList() {
                 percent={getPercentByStatus('paid')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
-                color={theme.palette.success.main}
+                color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
                 title="Unpaid"
@@ -218,7 +221,7 @@ export default function InvoiceList() {
                 percent={getPercentByStatus('unpaid')}
                 price={getTotalPriceByStatus('unpaid')}
                 icon="eva:clock-fill"
-                color={theme.palette.warning.main}
+                color={theme.palette.success.main}
               />
               <InvoiceAnalytic
                 title="Overdue"
@@ -226,7 +229,7 @@ export default function InvoiceList() {
                 percent={getPercentByStatus('overdue')}
                 price={getTotalPriceByStatus('overdue')}
                 icon="eva:bell-fill"
-                color={theme.palette.error.main}
+                color={theme.palette.success.main}
               />
               <InvoiceAnalytic
                 title="Draft"
@@ -234,7 +237,7 @@ export default function InvoiceList() {
                 percent={getPercentByStatus('draft')}
                 price={getTotalPriceByStatus('draft')}
                 icon="eva:file-fill"
-                color={theme.palette.text.secondary}
+                color={theme.palette.warning.secondary}
               />
             </Stack>
           </Scrollbar>
@@ -329,17 +332,17 @@ export default function InvoiceList() {
                   rowCount={tableData.length}
                   numSelected={selected.length}
                   onSort={onSort}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.id)
-                    )
-                  }
+                  // onSelectAllRows={(checked) =>
+                  //   onSelectAllRows(
+                  //     checked,
+                  //     tableData.map((row) => row.id)
+                  //   )
+                  // }
                 />
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <InvoiceTableRow
+                    <TypeAwards
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}

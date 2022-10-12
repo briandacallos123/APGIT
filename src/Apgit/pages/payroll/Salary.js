@@ -28,7 +28,8 @@ import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
-import { _invoices } from '../../../_mock';
+// import { _type } from '../../../_mock';
+import { _type } from '../../../_mock/customTable/leave';
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -38,8 +39,9 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableRow, InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 
+import Request from '../../components/LeaveTables/LeaveRequest';
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
@@ -52,18 +54,20 @@ const SERVICE_OPTIONS = [
 ];
 
 const TABLE_HEAD = [
-  { id: 'invoiceNumber', label: 'Client', align: 'left' },
-  { id: 'createDate', label: 'Create', align: 'left' },
-  { id: 'dueDate', label: 'Due', align: 'left' },
-  { id: 'price', label: 'Amount', align: 'center', width: 140 },
-  { id: 'sent', label: 'Sent', align: 'center', width: 140 },
-  { id: 'status', label: 'Status', align: 'left' },
-  { id: '' },
+  { id: 'invoiceNumber', label: 'Employee ID', align: 'left' },
+  { id: 'createDate', label: 'Name', align: 'center', width: 200 },
+  { id: 'Designation', label: 'Salary Type', align: 'right' },
+  { id: 'Department', label: 'Calculation', align: 'right' },
+  { id: 'Shift', label: 'Salary', align: 'right' },
+  { id: 'Basic Salary', label: 'Month', align: 'right' },
+  { id: 'Installment', label: 'Status', align: 'right' },
+  { id: 'Action', label: 'Action', align: 'right' },
+  // { id: '' },
 ];
 
 // ----------------------------------------------------------------------
 
-export default function InvoiceList() {
+export default function Advance() {
   const theme = useTheme();
 
   const { themeStretch } = useSettings();
@@ -89,7 +93,7 @@ export default function InvoiceList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_invoices);
+  const [tableData, setTableData] = useState(_type);
 
   const [filterName, setFilterName] = useState('');
 
@@ -169,9 +173,9 @@ export default function InvoiceList() {
 
   return (
     <Page title="Invoice: List">
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : 'xl'}>
         <HeaderBreadcrumbs
-          heading="Salary"
+          heading="Type"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
             { name: 'Invoices', href: DASHBOARD.root },
@@ -190,7 +194,7 @@ export default function InvoiceList() {
         />
 
         <Card sx={{ mb: 5 }}>
-          <Scrollbar>
+          {/* <Scrollbar>
             <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
@@ -237,11 +241,11 @@ export default function InvoiceList() {
                 color={theme.palette.warning.secondary}
               />
             </Stack>
-          </Scrollbar>
+          </Scrollbar> */}
         </Card>
 
         <Card>
-          <Tabs
+          {/* <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
@@ -258,7 +262,7 @@ export default function InvoiceList() {
                 label={tab.label}
               />
             ))}
-          </Tabs>
+          </Tabs> */}
 
           <Divider />
 
@@ -329,17 +333,17 @@ export default function InvoiceList() {
                   rowCount={tableData.length}
                   numSelected={selected.length}
                   onSort={onSort}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.id)
-                    )
-                  }
+                  // onSelectAllRows={(checked) =>
+                  //   onSelectAllRows(
+                  //     checked,
+                  //     tableData.map((row) => row.id)
+                  //   )
+                  // }
                 />
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <InvoiceTableRow
+                    <Request
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}

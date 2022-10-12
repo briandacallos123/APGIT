@@ -9,7 +9,7 @@ import { fullAddress, country } from './address';
 import { firstName, lastName, fullName } from './name';
 import { title, sentence, description } from './text';
 import { price, rating, age, percent } from './number';
-
+import { departments } from './department';
 // ----------------------------------------------------------------------
 
 const _mock = {
@@ -45,6 +45,10 @@ const _mock = {
     feed: (index) => `https://minimal-assets-api-dev.vercel.app/assets/images/feeds/feed_${index + 1}.jpg`,
     product: (index) => `https://minimal-assets-api-dev.vercel.app/assets/images/products/product_${index + 1}.jpg`,
     avatar: (index) => `https://minimal-assets-api-dev.vercel.app/assets/images/avatars/avatar_${index + 1}.jpg`,
+  },
+  department: {
+    title: (index) => departments[index].title,
+    status: (index) => departments[index].status,
   },
 };
 

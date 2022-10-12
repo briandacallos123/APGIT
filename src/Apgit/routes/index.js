@@ -78,6 +78,10 @@ export default function Router() {
               path: 'roles',
               element: <Roles />,
             },
+            {
+              path: 'new',
+              element: <Create />,
+            },
           ],
         },
 
@@ -436,6 +440,7 @@ const Departments = Loadable(lazy(() => import('../pages/usersroles/Departments'
 const Userlist = Loadable(lazy(() => import('../pages/usersroles/List')));
 const Designation = Loadable(lazy(() => import('../pages/usersroles/Designation')));
 const Roles = Loadable(lazy(() => import('../pages/usersroles/Roles')));
+const Create = Loadable(lazy(() => import('../pages/usersroles/Create')));
 // leave
 const Leave = Loadable(lazy(() => import('../pages/Leave/Leave')));
 const AssignLeave = Loadable(lazy(() => import('../pages/Leave/AssignLeave')));

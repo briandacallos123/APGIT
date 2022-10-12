@@ -4,7 +4,7 @@ import { randomInArray, randomNumberRange } from './funcs';
 
 // ----------------------------------------------------------------------
 
-export const _invoices = [...Array(20)].map((_, index) => ({
+export const _invoices = [...Array(10)].map((_, index) => ({
   id: _mock.id(index),
   invoiceNumber: `${17048 + index}`,
   taxes: 5,
@@ -31,6 +31,11 @@ export const _invoices = [...Array(20)].map((_, index) => ({
     email: _mock.email(index + 1),
     phone: _mock.phoneNumber(index + 1),
   },
+  // customDesignation: {
+  //   id: _mock.id(index),
+  //   title: _mock.role(index + 1),
+  //   status: randomStatus(),
+  // },
   items: [...Array(3)].map((_, index) => ({
     id: _mock.id(index),
     title: _mock.text.title(index),
@@ -47,6 +52,11 @@ export const _invoices = [...Array(20)].map((_, index) => ({
     ]),
   })),
 }));
+
+// export const _customDesignation = [...Array(2)].map((_, index) => ({
+//   id: _mock.id(index),
+//   status: _mock.randomStatus(),
+// }));
 
 export const _invoiceAddressFrom = [...Array(5)].map((_, index) => ({
   id: _mock.id(index),

@@ -8,11 +8,14 @@ function path(path, param) {
 export const DASHBOARD = {
   root: ROOT_DASHBOARD,
   dashboard: path(ROOT_DASHBOARD, '/dashboard'),
+
+  // users
   users: path(ROOT_DASHBOARD, '/users'),
   designation: path(ROOT_DASHBOARD, '/users/designation'),
   departments: path(ROOT_DASHBOARD, '/users/departments'),
   user: path(ROOT_DASHBOARD, '/users/user'),
   roles: path(ROOT_DASHBOARD, '/users/roles'),
+  newUser: path(ROOT_DASHBOARD, '/users/new'),
 
   // leave
   type: path(ROOT_DASHBOARD, '/leave/type'),

@@ -28,7 +28,12 @@ import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
-import { _invoices } from '../../../_mock';
+// dito mo hanapin yung mga data
+
+// import { _type } from '../../../_mock/customTable/usernroles';
+import { _type } from '../../../_mock/customTable/leave';
+// import {  } from '../../../_mock';
+// import {  } from '../../../_mock';
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -38,32 +43,33 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableRow, InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// dito rin
+import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 
+import TypeTable from '../../components/LeaveTables/TypeTables';
+
+// import { roles } from '../../_mock/role';
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
   'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
+  'Web Developert',
+  'Vendor Executive',
+  'UI UX Designer',
+  'Team Lead',
+  'Sr. Web Developer',
 ];
 
 const TABLE_HEAD = [
-  { id: 'invoiceNumber', label: 'Client', align: 'left' },
-  { id: 'createDate', label: 'Create', align: 'left' },
-  { id: 'dueDate', label: 'Due', align: 'left' },
-  { id: 'price', label: 'Amount', align: 'center', width: 140 },
-  { id: 'sent', label: 'Sent', align: 'center', width: 140 },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: 'invoiceNumber', label: 'Name', align: 'left', width: 1000 },
+  { id: 'createDate', label: 'Status', align: 'center', width: 1000 },
+  { id: 'dueDate', label: 'Action', align: 'right', width: 1000 },
   { id: '' },
 ];
 
 // ----------------------------------------------------------------------
 
-export default function InvoiceList() {
+export default function Type() {
   const theme = useTheme();
 
   const { themeStretch } = useSettings();
@@ -89,7 +95,7 @@ export default function InvoiceList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_invoices);
+  const [tableData, setTableData] = useState(_type);
 
   const [filterName, setFilterName] = useState('');
 
@@ -167,11 +173,12 @@ export default function InvoiceList() {
     { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
   ];
 
+  // console.log(_type);
   return (
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Type"
+          heading="Leave Type"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
             { name: 'Invoices', href: DASHBOARD.root },
@@ -181,10 +188,10 @@ export default function InvoiceList() {
             <Button
               variant="contained"
               component={RouterLink}
-              to={DASHBOARD.root}
+              to={DASHBOARD.newUser}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-              New Invoice
+              New Designation
             </Button>
           }
         />
@@ -268,7 +275,7 @@ export default function InvoiceList() {
             filterStartDate={filterStartDate}
             filterEndDate={filterEndDate}
             onFilterName={handleFilterName}
-            onFilterService={handleFilterService}
+            // onFilterService={handleFilterService}
             onFilterStartDate={(newValue) => {
               setFilterStartDate(newValue);
             }}
@@ -287,8 +294,9 @@ export default function InvoiceList() {
                   rowCount={tableData.length}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.id)
+                      checked
+                      // nag comment ka dito
+                      // tableData.map((row) => row.id)
                     )
                   }
                   actions={
@@ -329,17 +337,17 @@ export default function InvoiceList() {
                   rowCount={tableData.length}
                   numSelected={selected.length}
                   onSort={onSort}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.id)
-                    )
-                  }
+                  // onSelectAllRows={(checked) =>
+                  //   onSelectAllRows(
+                  //     checked,
+                  //     tableData.map((row) => row.id)
+                  //   )
+                  // }
                 />
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <InvoiceTableRow
+                    <TypeTable
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}

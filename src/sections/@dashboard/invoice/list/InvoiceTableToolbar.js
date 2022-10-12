@@ -32,11 +32,11 @@ export default function InvoiceTableToolbar({
   onFilterEndDate,
 }) {
   return (
-    <Stack spacing={2} direction={{ xs: 'column', md: 'row' }} sx={{ py: 2.5, px: 3 }}>
+    <Stack spacing={3} direction={{ xs: 'column', md: 'row' }} sx={{ py: 2.5, px: 3 }}>
       <TextField
         fullWidth
         select
-        label="Service type"
+        label="Designation Type   "
         value={filterService}
         onChange={onFilterService}
         SelectProps={{

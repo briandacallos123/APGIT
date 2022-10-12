@@ -15,19 +15,20 @@ import { TableMoreMenu } from '../../../../components/table';
 
 // ----------------------------------------------------------------------
 
-InvoiceTableRow.propTypes = {
-  row: PropTypes.object.isRequired,
-  selected: PropTypes.bool,
-  onSelectRow: PropTypes.func,
-  onViewRow: PropTypes.func,
-  onEditRow: PropTypes.func,
-  onDeleteRow: PropTypes.func,
-};
+// InvoiceTableRow.propTypes = {
+//   row: PropTypes.object.isRequired,
+//   selected: PropTypes.bool,
+//   onSelectRow: PropTypes.func,
+//   onViewRow: PropTypes.func,
+//   onEditRow: PropTypes.func,
+//   onDeleteRow: PropTypes.func,
+// };
 
 export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { sent, invoiceNumber, createDate, dueDate, status, invoiceTo, totalPrice } = row;
+  // const { sent, invoiceNumber, createDate, dueDate, status, invoiceTo, totalPrice } = row;
+  const { role, status } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -42,44 +43,14 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
   return (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
-        <Checkbox checked={selected} onClick={onSelectRow} />
+        <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+          {role}
+        </Typography>
       </TableCell>
-
-      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar alt={invoiceTo.name} color={createAvatar(invoiceTo.name).color} sx={{ mr: 2 }}>
-          {createAvatar(invoiceTo.name).name}
-        </Avatar>
-
-        <Stack>
-          <Typography variant="subtitle2" noWrap>
-            {invoiceTo.name}
-          </Typography>
-
-          <Link noWrap variant="body2" onClick={onViewRow} sx={{ color: 'text.disabled', cursor: 'pointer' }}>
-            {`INV-${invoiceNumber}`}
-          </Link>
-        </Stack>
-      </TableCell>
-
-      <TableCell align="left">{fDate(createDate)}</TableCell>
-
-      <TableCell align="left">{fDate(dueDate)}</TableCell>
-
-      <TableCell align="center">{fCurrency(totalPrice)}</TableCell>
-
-      <TableCell align="center" sx={{ textTransform: 'capitalize' }}>
-        {sent}
-      </TableCell>
-
-      <TableCell align="left">
+      <TableCell padding="checkbox" align="center">
         <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-          color={
-            (status === 'paid' && 'success') ||
-            (status === 'unpaid' && 'warning') ||
-            (status === 'overdue' && 'error') ||
-            'default'
-          }
+          color={(status === 'active' && 'success') || (status === 'not active' && 'warning') || 'default'}
           sx={{ textTransform: 'capitalize' }}
         >
           {status}
@@ -127,6 +98,7 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
           }
         />
       </TableCell>
+      <TableCell>{}</TableCell>
     </TableRow>
   );
 }

@@ -28,7 +28,10 @@ import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
-import { _invoices } from '../../../_mock';
+// dito mo hanapin yung mga data
+import { _clients } from '../../../_mock/customTable/clients/_clients';
+// import {  } from '../../../_mock';
+// import {  } from '../../../_mock';
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -38,26 +41,28 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableRow, InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
-
+// dito rin
+import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+import ClientsTable from '../../components/Clients';
+// import { roles } from '../../_mock/role';
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
   'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
+  'Web Developert',
+  'Vendor Executive',
+  'UI UX Designer',
+  'Team Lead',
+  'Sr. Web Developer',
 ];
 
 const TABLE_HEAD = [
-  { id: 'invoiceNumber', label: 'Client', align: 'left' },
-  { id: 'createDate', label: 'Create', align: 'left' },
-  { id: 'dueDate', label: 'Due', align: 'left' },
-  { id: 'price', label: 'Amount', align: 'center', width: 140 },
-  { id: 'sent', label: 'Sent', align: 'center', width: 140 },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: 'invoiceNumber', label: 'Name', align: 'left', width: 1000 },
+  { id: 'createDate', label: 'Email', align: 'center', width: 1000 },
+  { id: 'dueDate', label: 'Phone', align: 'center', width: 1000 },
+  { id: 'price', label: 'Website', align: 'center', width: 1000 },
+  { id: 'sent', label: 'Status', align: 'center', width: 1000 },
+  { id: 'status', label: 'Action', align: 'right', width: 1000 },
   { id: '' },
 ];
 
@@ -89,7 +94,7 @@ export default function InvoiceList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_invoices);
+  const [tableData, setTableData] = useState(_clients);
 
   const [filterName, setFilterName] = useState('');
 
@@ -159,19 +164,19 @@ export default function InvoiceList() {
 
   const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
 
-  const TABS = [
-    { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
-  ];
+  // const TABS = [
+  //   { value: 'all', label: 'All', color: 'info', count: tableData.length },
+  //   { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
+  //   { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
+  //   { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
+  //   { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+  // ];
 
   return (
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="List"
+          heading="Designation"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
             { name: 'Invoices', href: DASHBOARD.root },
@@ -181,17 +186,17 @@ export default function InvoiceList() {
             <Button
               variant="contained"
               component={RouterLink}
-              to={DASHBOARD.root}
+              to={DASHBOARD.newUser}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-              New Invoice
+              New Designation
             </Button>
           }
         />
 
         <Card sx={{ mb: 5 }}>
           <Scrollbar>
-            <Stack
+            {/* <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
               sx={{ py: 2 }}
@@ -199,10 +204,10 @@ export default function InvoiceList() {
               <InvoiceAnalytic
                 title="Total"
                 total={tableData.length}
-                percent={100}
+                percent={25}
                 price={sumBy(tableData, 'totalPrice')}
                 icon="ic:round-receipt"
-                color={theme.palette.info.main}
+                color={theme.palette.error.main}
               />
               <InvoiceAnalytic
                 title="Paid"
@@ -210,7 +215,7 @@ export default function InvoiceList() {
                 percent={getPercentByStatus('paid')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
-                color={theme.palette.success.main}
+                color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
                 title="Unpaid"
@@ -218,7 +223,7 @@ export default function InvoiceList() {
                 percent={getPercentByStatus('unpaid')}
                 price={getTotalPriceByStatus('unpaid')}
                 icon="eva:clock-fill"
-                color={theme.palette.warning.main}
+                color={theme.palette.success.main}
               />
               <InvoiceAnalytic
                 title="Overdue"
@@ -226,7 +231,7 @@ export default function InvoiceList() {
                 percent={getPercentByStatus('overdue')}
                 price={getTotalPriceByStatus('overdue')}
                 icon="eva:bell-fill"
-                color={theme.palette.error.main}
+                color={theme.palette.success.main}
               />
               <InvoiceAnalytic
                 title="Draft"
@@ -234,14 +239,14 @@ export default function InvoiceList() {
                 percent={getPercentByStatus('draft')}
                 price={getTotalPriceByStatus('draft')}
                 icon="eva:file-fill"
-                color={theme.palette.text.secondary}
+                color={theme.palette.warning.secondary}
               />
-            </Stack>
+            </Stack> */}
           </Scrollbar>
         </Card>
 
         <Card>
-          <Tabs
+          {/* <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
@@ -258,7 +263,7 @@ export default function InvoiceList() {
                 label={tab.label}
               />
             ))}
-          </Tabs>
+          </Tabs> */}
 
           <Divider />
 
@@ -268,7 +273,7 @@ export default function InvoiceList() {
             filterStartDate={filterStartDate}
             filterEndDate={filterEndDate}
             onFilterName={handleFilterName}
-            onFilterService={handleFilterService}
+            // onFilterService={handleFilterService}
             onFilterStartDate={(newValue) => {
               setFilterStartDate(newValue);
             }}
@@ -287,8 +292,9 @@ export default function InvoiceList() {
                   rowCount={tableData.length}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.id)
+                      checked
+                      // nag comment ka dito
+                      // tableData.map((row) => row.id)
                     )
                   }
                   actions={
@@ -329,17 +335,17 @@ export default function InvoiceList() {
                   rowCount={tableData.length}
                   numSelected={selected.length}
                   onSort={onSort}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.id)
-                    )
-                  }
+                  // onSelectAllRows={(checked) =>
+                  //   onSelectAllRows(
+                  //     checked,
+                  //     tableData.map((row) => row.id)
+                  //   )
+                  // }
                 />
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <InvoiceTableRow
+                    <ClientsTable
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}

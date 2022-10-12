@@ -1,13 +1,15 @@
-import { paramCase } from 'change-case';
+import sumBy from 'lodash/sumBy';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
+import { useTheme } from '@mui/material/styles';
 import {
   Box,
   Tab,
   Tabs,
   Card,
   Table,
+  Stack,
   Switch,
   Button,
   Tooltip,
@@ -26,45 +28,54 @@ import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
-import { _userList } from '../../../_mock';
+// import { _appraisal } from '../../../_mock';
+// import { _appraisal } from '../../../_mock/customTable/leave';
+import { _appraisal } from '../../../_mock/customTable/performance';
 // components
 import Page from '../../../components/Page';
+import Label from '../../../components/Label';
 import Iconify from '../../../components/Iconify';
 import Scrollbar from '../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
-import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../../components/table';
+import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
-import { UserTableToolbar, UserTableRow } from '../../../sections/@dashboard/user/list';
+import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
+import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 
+// import AppraisalTable from '../../components/LeaveTables/LeaveAppraisalTable';
+import AppraisalTable from '../../components/Performance/AppraisalTable';
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = ['all', 'active', 'banned'];
-
-const ROLE_OPTIONS = [
+const SERVICE_OPTIONS = [
   'all',
-  'ux designer',
-  'full stack designer',
-  'backend developer',
-  'project manager',
-  'leader',
-  'ui designer',
-  'ui/ux designer',
-  'front end developer',
-  'full stack developer',
+  'full stack development',
+  'backend development',
+  'ui design',
+  'ui/ux design',
+  'front end development',
 ];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', align: 'left' },
-  { id: 'company', label: 'Company', align: 'left' },
-  { id: 'role', label: 'Role', align: 'left' },
-  { id: 'isVerified', label: 'Verified', align: 'center' },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: 'Name', label: 'Title', align: 'left', width: 1000 },
+  { id: 'Balance', label: 'Employee', align: 'center', width: 300 },
+  { id: 'Department', label: 'Department', align: 'center', width: 1000 },
+  { id: 'Shift', label: 'Designation', align: 'center', width: 1000 },
+  { id: 'Status', label: 'Rating', align: 'center', width: 1000 },
+  { id: 'Amount', label: 'Added By', align: 'center', width: 1000 },
+  { id: 'Date', label: 'Created At', align: 'center', width: 1000 },
+  { id: 'Action', label: 'Action', align: 'center', width: 1000 },
   { id: '' },
 ];
 
 // ----------------------------------------------------------------------
 
-export default function UserList() {
+export default function Appraisal() {
+  const theme = useTheme();
+
+  const { themeStretch } = useSettings();
+
+  const navigate = useNavigate();
+
   const {
     dense,
     page,
@@ -82,27 +93,27 @@ export default function UserList() {
     onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
-  } = useTable();
+  } = useTable({ defaultOrderBy: 'createDate' });
 
-  const { themeStretch } = useSettings();
-
-  const navigate = useNavigate();
-
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(_appraisal);
 
   const [filterName, setFilterName] = useState('');
 
-  const [filterRole, setFilterRole] = useState('all');
+  const [filterService, setFilterService] = useState('all');
 
-  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('all');
+  const [filterStartDate, setFilterStartDate] = useState(null);
+
+  const [filterEndDate, setFilterEndDate] = useState(null);
+
+  const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
     setPage(0);
   };
 
-  const handleFilterRole = (event) => {
-    setFilterRole(event.target.value);
+  const handleFilterService = (event) => {
+    setFilterService(event.target.value);
   };
 
   const handleDeleteRow = (id) => {
@@ -118,32 +129,58 @@ export default function UserList() {
   };
 
   const handleEditRow = (id) => {
-    // navigate(DASHBOARD.user.edit(paramCase(id)));
+    // navigate(DASHBOARD.invoice.new(id));
+  };
+
+  const handleViewRow = (id) => {
+    // navigate(DASHBOARD.invoice.new(id));
   };
 
   const dataFiltered = applySortFilter({
     tableData,
     comparator: getComparator(order, orderBy),
     filterName,
-    filterRole,
+    filterService,
     filterStatus,
+    filterStartDate,
+    filterEndDate,
   });
-
-  const denseHeight = dense ? 52 : 72;
 
   const isNotFound =
     (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length && !!filterRole) ||
-    (!dataFiltered.length && !!filterStatus);
+    (!dataFiltered.length && !!filterStatus) ||
+    (!dataFiltered.length && !!filterService) ||
+    (!dataFiltered.length && !!filterEndDate) ||
+    (!dataFiltered.length && !!filterStartDate);
+
+  const denseHeight = dense ? 56 : 76;
+
+  const getLengthByStatus = (status) => tableData.filter((item) => item.status === status).length;
+
+  const getTotalPriceByStatus = (status) =>
+    sumBy(
+      tableData.filter((item) => item.status === status),
+      'totalPrice'
+    );
+
+  const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
+
+  const TABS = [
+    { value: 'all', label: 'Account', color: 'info', count: tableData.length },
+    { value: 'paid', label: 'Amount', color: 'success', count: getLengthByStatus('paid') },
+    { value: 'unpaid', label: 'Type', color: 'warning', count: getLengthByStatus('unpaid') },
+    { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
+    { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
+  ];
 
   return (
-    <Page title="User: List">
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+    <Page title="Invoice: List">
+      <Container maxWidth={themeStretch ? false : 'xl'}>
         <HeaderBreadcrumbs
           heading="Appraisal"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
-            { name: 'User', href: DASHBOARD.root },
+            { name: 'Invoices', href: DASHBOARD.root },
             { name: 'List' },
           ]}
           action={
@@ -153,10 +190,61 @@ export default function UserList() {
               to={DASHBOARD.root}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-              New User
+              New Invoice
             </Button>
           }
         />
+
+        <Card sx={{ mb: 5 }}>
+          <Scrollbar>
+            <Stack
+              direction="row"
+              divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
+              sx={{ py: 2 }}
+            >
+              <InvoiceAnalytic
+                title="Total"
+                total={tableData.length}
+                percent={25}
+                price={sumBy(tableData, 'totalPrice')}
+                icon="ic:round-receipt"
+                color={theme.palette.error.main}
+              />
+              <InvoiceAnalytic
+                title="Paid"
+                total={getLengthByStatus('paid')}
+                percent={getPercentByStatus('paid')}
+                price={getTotalPriceByStatus('paid')}
+                icon="eva:checkmark-circle-2-fill"
+                color={theme.palette.warning.main}
+              />
+              <InvoiceAnalytic
+                title="Unpaid"
+                total={getLengthByStatus('unpaid')}
+                percent={getPercentByStatus('unpaid')}
+                price={getTotalPriceByStatus('unpaid')}
+                icon="eva:clock-fill"
+                color={theme.palette.success.main}
+              />
+              <InvoiceAnalytic
+                title="Overdue"
+                total={getLengthByStatus('overdue')}
+                percent={getPercentByStatus('overdue')}
+                price={getTotalPriceByStatus('overdue')}
+                icon="eva:bell-fill"
+                color={theme.palette.success.main}
+              />
+              <InvoiceAnalytic
+                title="Draft"
+                total={getLengthByStatus('draft')}
+                percent={getPercentByStatus('draft')}
+                price={getTotalPriceByStatus('draft')}
+                icon="eva:file-fill"
+                color={theme.palette.warning.secondary}
+              />
+            </Stack>
+          </Scrollbar>
+        </Card>
 
         <Card>
           <Tabs
@@ -164,22 +252,36 @@ export default function UserList() {
             variant="scrollable"
             scrollButtons="auto"
             value={filterStatus}
-            onChange={onChangeFilterStatus}
+            onChange={onFilterStatus}
             sx={{ px: 2, bgcolor: 'background.neutral' }}
           >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab disableRipple key={tab} label={tab} value={tab} />
+            {TABS.map((tab) => (
+              <Tab
+                disableRipple
+                key={tab.value}
+                value={tab.value}
+                icon={<Label color={tab.color}> {tab.count} </Label>}
+                label={tab.label}
+              />
             ))}
           </Tabs>
 
           <Divider />
 
-          <UserTableToolbar
+          <InvoiceTableToolbar
             filterName={filterName}
-            filterRole={filterRole}
+            filterService={filterService}
+            filterStartDate={filterStartDate}
+            filterEndDate={filterEndDate}
             onFilterName={handleFilterName}
-            onFilterRole={handleFilterRole}
-            optionsRole={ROLE_OPTIONS}
+            onFilterService={handleFilterService}
+            onFilterStartDate={(newValue) => {
+              setFilterStartDate(newValue);
+            }}
+            onFilterEndDate={(newValue) => {
+              setFilterEndDate(newValue);
+            }}
+            optionsService={SERVICE_OPTIONS}
           />
 
           <Scrollbar>
@@ -196,11 +298,31 @@ export default function UserList() {
                     )
                   }
                   actions={
-                    <Tooltip title="Delete">
-                      <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
-                        <Iconify icon={'eva:trash-2-outline'} />
-                      </IconButton>
-                    </Tooltip>
+                    <Stack spacing={1} direction="row">
+                      <Tooltip title="Sent">
+                        <IconButton color="primary">
+                          <Iconify icon={'ic:round-send'} />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Download">
+                        <IconButton color="primary">
+                          <Iconify icon={'eva:download-outline'} />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Print">
+                        <IconButton color="primary">
+                          <Iconify icon={'eva:printer-fill'} />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Delete">
+                        <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
+                          <Iconify icon={'eva:trash-2-outline'} />
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
                   }
                 />
               )}
@@ -213,23 +335,24 @@ export default function UserList() {
                   rowCount={tableData.length}
                   numSelected={selected.length}
                   onSort={onSort}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.id)
-                    )
-                  }
+                  // onSelectAllRows={(checked) =>
+                  //   onSelectAllRows(
+                  //     checked,
+                  //     tableData.map((row) => row.id)
+                  //   )
+                  // }
                 />
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <UserTableRow
+                    <AppraisalTable
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}
                       onSelectRow={() => onSelectRow(row.id)}
+                      onViewRow={() => handleViewRow(row.id)}
+                      onEditRow={() => handleEditRow(row.id)}
                       onDeleteRow={() => handleDeleteRow(row.id)}
-                      onEditRow={() => handleEditRow(row.name)}
                     />
                   ))}
 
@@ -266,7 +389,15 @@ export default function UserList() {
 
 // ----------------------------------------------------------------------
 
-function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
+function applySortFilter({
+  tableData,
+  comparator,
+  filterName,
+  filterStatus,
+  filterService,
+  filterStartDate,
+  filterEndDate,
+}) {
   const stabilizedThis = tableData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
@@ -278,15 +409,26 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter((item) => item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
+    tableData = tableData.filter(
+      (item) =>
+        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+    );
   }
 
   if (filterStatus !== 'all') {
     tableData = tableData.filter((item) => item.status === filterStatus);
   }
 
-  if (filterRole !== 'all') {
-    tableData = tableData.filter((item) => item.role === filterRole);
+  if (filterService !== 'all') {
+    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+  }
+
+  if (filterStartDate && filterEndDate) {
+    tableData = tableData.filter(
+      (item) =>
+        item.createDate.getTime() >= filterStartDate.getTime() && item.createDate.getTime() <= filterEndDate.getTime()
+    );
   }
 
   return tableData;
