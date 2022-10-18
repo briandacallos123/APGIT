@@ -268,6 +268,7 @@ export default function Router() {
               children: [
                 {
                   path: 'competencetype',
+
                   element: <CompetenceType />,
                 },
                 {

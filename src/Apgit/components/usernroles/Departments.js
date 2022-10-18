@@ -29,6 +29,7 @@ export default function DepartmentsTable({ row, selected, onSelectRow, onViewRow
 
   // const { sent, invoiceNumber, createDate, dueDate, status, invoiceTo, totalPrice } = row;
   const { role, employees, status } = row;
+  console.log(row);
 
   const [openMenu, setOpenMenuActions] = useState(null);
 

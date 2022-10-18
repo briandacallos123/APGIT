@@ -1,6 +1,6 @@
 import { paramCase } from 'change-case';
 import { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, Outlet } from 'react-router-dom';
 // @mui
 import {
   Box,
@@ -138,7 +138,8 @@ export default function UserList() {
 
   return (
     <Page title="User: List">
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Outlet />
+      {/* <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading="Settings"
           links={[
@@ -259,7 +260,7 @@ export default function UserList() {
             />
           </Box>
         </Card>
-      </Container>
+      </Container> */}
     </Page>
   );
 }

@@ -54,11 +54,11 @@ const ROLE_OPTIONS = [
 ];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', align: 'left' },
-  { id: 'company', label: 'Company', align: 'left' },
-  { id: 'role', label: 'Role', align: 'left' },
-  { id: 'isVerified', label: 'Verified', align: 'center' },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: 'name', label: 'ID', align: 'left' },
+  { id: 'company', label: 'Name', align: 'left' },
+  { id: 'role', label: 'Competence Type', align: 'left' },
+  { id: 'isVerified', label: 'Status', align: 'center' },
+  { id: 'status', label: 'Action', align: 'left' },
   { id: '' },
 ];
 
@@ -278,7 +278,12 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter((item) => item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
+    tableData = tableData.filter(
+      (item) =>
+        item.id.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+    );
   }
 
   if (filterStatus !== 'all') {

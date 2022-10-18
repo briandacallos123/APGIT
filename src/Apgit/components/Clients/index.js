@@ -44,24 +44,24 @@ export default function ClientsTable({ row, selected, onSelectRow, onViewRow, on
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>
         <TableCell padding="checkbox" align="left">
           <Stack direction="row" sx={{ alignItems: 'center' }}>
-            <img
-              src={img}
-              alt=""
-              style={{
-                borderRadius: '50%',
-                width: '50px',
-                marginRight: '.3rem',
-              }}
-            />
+            <Checkbox checked={selected} onClick={onSelectRow} />
+            <Stack direction="row" sx={{ alignItems: 'center' }}>
+              <img
+                src={img}
+                alt=""
+                style={{
+                  borderRadius: '50%',
+                  width: '50px',
+                  marginRight: '.3rem',
+                }}
+              />
 
-            <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-              {employeeName}
-            </Typography>
+              <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+                {employeeName}
+              </Typography>
+            </Stack>
           </Stack>
         </TableCell>
         <TableCell padding="checkbox" align="center">

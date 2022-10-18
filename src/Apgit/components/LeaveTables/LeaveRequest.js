@@ -27,9 +27,10 @@ import { TableMoreMenu } from '../../../components/table';
 export default function Request({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow }) {
   const theme = useTheme();
 
-  // const { sent, invoiceNumber, createDate, dueDate, status, invoiceTo, totalPrice } = row;
-  const { id, projectName, membersImg, client, clientImg, priority, startDate, deadLine, members, memberImg, status } =
-    row;
+  const { id, name, leaveType, img, days, date, available, subtitute, managerApprove, hrApprove, file, status } = row;
+  // const { id, projectName, membersImg, client, clientImg, priority, startDate, deadLine, members, memberImg, status } =
+  //   row;
+  console.log(row);
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -46,42 +47,75 @@ export default function Request({ row, selected, onSelectRow, onViewRow, onEditR
       <TableCell padding="checkbox" align="left">
         <Stack direction="row" sx={{ alignItems: 'center' }}>
           <Checkbox checked={selected} onClick={onSelectRow} />
-          <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-            {projectName}
-          </Typography>
-        </Stack>
-      </TableCell>
-      <TableCell padding="checkbox" align="center">
-        <Stack direction="row" sx={{ alignItems: 'center' }}>
-          <img
-            src={clientImg}
-            alt=""
-            style={{
-              borderRadius: '50%',
-              width: '50px',
-              marginRight: '.3rem',
-            }}
-          />
+          <Stack direction="row" sx={{ alignItems: 'center' }}>
+            <img
+              src={img}
+              alt=""
+              style={{
+                borderRadius: '50%',
+                width: '50px',
+                marginRight: '.5rem',
+              }}
+            />
 
-          <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-            {client}
-          </Typography>
+            <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+              {name}
+            </Typography>
+          </Stack>
         </Stack>
       </TableCell>
       <TableCell padding="checkbox" align="center">
         <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-          {priority}
+          {leaveType}
         </Typography>
       </TableCell>
       <TableCell padding="checkbox" align="center">
         <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-          {startDate}
+          {date}
         </Typography>
       </TableCell>
       <TableCell padding="checkbox" align="center">
         <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-          {deadLine}
+          {days}
         </Typography>
+      </TableCell>
+      <TableCell padding="checkbox" align="center">
+        <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+          {available}
+        </Typography>
+      </TableCell>
+      <TableCell padding="checkbox" align="center">
+        <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+          {subtitute}
+        </Typography>
+      </TableCell>
+      <TableCell padding="checkbox" align="center">
+        <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+          {managerApprove}
+        </Typography>
+      </TableCell>
+      <TableCell padding="checkbox" align="center">
+        <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+          {hrApprove}
+        </Typography>
+      </TableCell>
+      <TableCell padding="checkbox" align="center">
+        <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+          {file}
+        </Typography>
+      </TableCell>
+      <TableCell padding="checkbox" align="center">
+        <Label
+          variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+          color={(status === 'Active' && 'success') || (status === 'not active' && 'warning') || 'default'}
+          sx={{ textTransform: 'capitalize' }}
+        >
+          {status}
+        </Label>
+      </TableCell>
+
+      {/* <TableCell padding="checkbox" align="left">
+      
       </TableCell>
       <TableCell padding="checkbox" align="center">
         <Stack direction="row" sx={{ alignItems: 'center' }}>
@@ -108,7 +142,7 @@ export default function Request({ row, selected, onSelectRow, onViewRow, onEditR
         >
           {status}
         </Label>
-      </TableCell>
+      </TableCell> */}
 
       {/* 
       <TableCell padding="checkbox" align="center">

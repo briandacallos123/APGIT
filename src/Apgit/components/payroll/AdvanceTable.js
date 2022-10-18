@@ -27,7 +27,7 @@ import { TableMoreMenu } from '../../../components/table';
 export default function Advance({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow }) {
   const theme = useTheme();
 
-  // const { sent, invoiceNumber, createDate, dueDate, status, invoiceTo, totalPrice } = row;
+  const { id, employee, empName, department, shift, salary, status, role } = row;
   //   const { id, role, empName, employee, dept, breakTime, shift, salary, status } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
@@ -42,10 +42,13 @@ export default function Advance({ row, selected, onSelectRow, onViewRow, onEditR
 
   return (
     <TableRow hover selected={selected}>
-      {/* <TableCell align="left">
-        <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-          {id}
-        </Typography>
+      <TableCell padding="checkbox" align="left">
+        <Stack direction="row" sx={{ alignItems: 'center' }}>
+          <Checkbox checked={selected} onClick={onSelectRow} />
+          <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+            {id}
+          </Typography>
+        </Stack>
       </TableCell>
       <TableCell align="left">
         <Stack direction="row" sx={{ alignItems: 'center' }}>
@@ -68,6 +71,34 @@ export default function Advance({ row, selected, onSelectRow, onViewRow, onEditR
           {role}
         </Typography>
       </TableCell>
+      <TableCell align="center">
+        <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+          {department}
+        </Typography>
+      </TableCell>
+      <TableCell align="center">
+        <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+          {shift}
+        </Typography>
+      </TableCell>
+      <TableCell align="center">
+        <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+          {salary}
+        </Typography>
+      </TableCell>
+      <TableCell padding="checkbox" align="center">
+        <Label
+          variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+          color={(status === 'Active' && 'success') || (status === 'not active' && 'warning') || 'default'}
+          sx={{ textTransform: 'capitalize' }}
+        >
+          {status}
+        </Label>
+      </TableCell>
+
+      {/* 
+      
+      
       <TableCell align="center">
         <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
           {dept}

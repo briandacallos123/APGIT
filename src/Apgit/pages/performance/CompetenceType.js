@@ -28,8 +28,10 @@ import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
-// import { _type } from '../../../_mock';
-import { _type } from '../../../_mock/customTable/leave';
+// import { _competenceTypesData } from '../../../_mock';
+// import { _competenceTypesData } from '../../../_mock/customTable/leave';
+import { _competenceTypesData } from '../../../_mock/customTable/performance';
+
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -41,7 +43,8 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 
-import Request from '../../components/LeaveTables/LeaveRequest';
+// import CompetenceType from '../../components/LeaveTables/LeaveCompetenceType';
+import CompetenceTypeTable from '../../components/Performance/CompetenceType';
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
@@ -89,7 +92,7 @@ export default function CompetenceType() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_type);
+  const [tableData, setTableData] = useState(_competenceTypesData);
 
   const [filterName, setFilterName] = useState('');
 
@@ -169,7 +172,7 @@ export default function CompetenceType() {
 
   return (
     <Page title="Invoice: List">
-      <Container maxWidth={themeStretch ? false : 'xl'}>
+      <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading="CompetenceType"
           links={[
@@ -190,7 +193,7 @@ export default function CompetenceType() {
         />
 
         <Card sx={{ mb: 5 }}>
-          {/* <Scrollbar>
+          <Scrollbar>
             <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
@@ -237,11 +240,11 @@ export default function CompetenceType() {
                 color={theme.palette.warning.secondary}
               />
             </Stack>
-          </Scrollbar> */}
+          </Scrollbar>
         </Card>
 
         <Card>
-          {/* <Tabs
+          <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
@@ -258,7 +261,7 @@ export default function CompetenceType() {
                 label={tab.label}
               />
             ))}
-          </Tabs> */}
+          </Tabs>
 
           <Divider />
 
@@ -339,7 +342,7 @@ export default function CompetenceType() {
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <Request
+                    <CompetenceTypeTable
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}
@@ -405,8 +408,9 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.id.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

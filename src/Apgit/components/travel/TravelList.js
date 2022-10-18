@@ -81,9 +81,13 @@ export default function TypeTravel({ row, selected, onSelectRow, onViewRow, onEd
           </Typography>
         </TableCell>
         <TableCell padding="checkbox" align="center">
-          <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
+          <Label
+            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+            color={(status === 'Active' && 'success') || (status === 'not active' && 'warning') || 'default'}
+            sx={{ textTransform: 'capitalize' }}
+          >
             {status}
-          </Typography>
+          </Label>
         </TableCell>
         <TableCell padding="checkbox" align="center">
           <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>

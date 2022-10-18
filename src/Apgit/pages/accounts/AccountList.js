@@ -181,7 +181,7 @@ export default function Account() {
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <HeaderBreadcrumbs
-          heading="Leave Type"
+          heading="Account List"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
             { name: 'Invoices', href: DASHBOARD.root },
@@ -416,8 +416,11 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.balance.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.accNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.branch.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

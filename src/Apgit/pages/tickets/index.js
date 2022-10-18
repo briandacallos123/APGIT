@@ -28,8 +28,9 @@ import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
-// import { _type } from '../../../_mock';
-import { _type } from '../../../_mock/customTable/leave';
+// import { _ticket } from '../../../_mock';
+// import { _ticket } from '../../../_mock/customTable/leave';
+import { _ticket } from '../../../_mock/customTable/support';
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -41,7 +42,8 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 
-import Request from '../../components/LeaveTables/LeaveRequest';
+// import SupportTable from '../../components/LeaveTables/LeaveSupportTable';
+import SupportTable from '../../components/Support/SupportTable';
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
@@ -57,9 +59,9 @@ const TABLE_HEAD = [
   { id: 'Name', label: 'Date', align: 'left', width: 1000 },
   { id: 'Balance', label: 'Code', align: 'center', width: 1000 },
   { id: 'Department', label: 'Employee Name', align: 'center', width: 1000 },
-  { id: 'Start', label: 'Subject', align: 'right', width: 1000 },
-  { id: 'End', label: 'Type', align: 'right', width: 1000 },
-  { id: 'File', label: 'Priority', align: 'right', width: 1000 },
+  { id: 'Start', label: 'Subject', align: 'center', width: 1000 },
+  { id: 'End', label: 'Type', align: 'center', width: 1000 },
+  { id: 'File', label: 'Priority', align: 'center', width: 1000 },
   { id: 'Action', label: 'Action', align: 'right', width: 1000 },
   { id: '' },
 ];
@@ -92,7 +94,7 @@ export default function Tickets() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_type);
+  const [tableData, setTableData] = useState(_ticket);
 
   const [filterName, setFilterName] = useState('');
 
@@ -193,7 +195,7 @@ export default function Tickets() {
         />
 
         <Card sx={{ mb: 5 }}>
-          {/* <Scrollbar>
+          <Scrollbar>
             <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
@@ -240,11 +242,11 @@ export default function Tickets() {
                 color={theme.palette.warning.secondary}
               />
             </Stack>
-          </Scrollbar> */}
+          </Scrollbar>
         </Card>
 
         <Card>
-          {/* <Tabs
+          <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
@@ -261,7 +263,7 @@ export default function Tickets() {
                 label={tab.label}
               />
             ))}
-          </Tabs> */}
+          </Tabs>
 
           <Divider />
 
@@ -342,7 +344,7 @@ export default function Tickets() {
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <Request
+                    <SupportTable
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}
@@ -408,8 +410,11 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.code.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.subject.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.type.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.priority.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.employee.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

@@ -63,12 +63,12 @@ const SERVICE_OPTIONS = [
 ];
 
 const TABLE_HEAD = [
-  { id: 'Name', label: 'Account', align: 'left' },
-  { id: 'Balance', label: 'Amount', align: 'center' },
-  { id: 'Department', label: 'Type', align: 'center' },
-  { id: 'Shift', label: 'Date', align: 'center' },
-  { id: 'Installment', label: 'Status', align: 'right' },
-  { id: 'Action', label: 'Action', align: 'right' },
+  { id: 'Name', label: 'Account', align: 'left', width: 1000 },
+  { id: 'Balance', label: 'Amount', align: 'center', width: 1000 },
+  { id: 'Department', label: 'Type', align: 'center', width: 1000 },
+  { id: 'Shift', label: 'Date', align: 'center', width: 1000 },
+  { id: 'Installment', label: 'Status', align: 'center', width: 1000 },
+  { id: 'Action', label: 'Action', align: 'right', width: 1000 },
   { id: '' },
 ];
 
@@ -183,7 +183,7 @@ export default function Deposit() {
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Expense"
+          heading="Transaction History"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
             { name: 'Invoices', href: DASHBOARD.root },
@@ -418,8 +418,10 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.amount.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.type.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

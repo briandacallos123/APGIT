@@ -24,13 +24,17 @@ import { TableMoreMenu } from '../../../components/table';
 //   onDeleteRow: PropTypes.func,
 // };
 
+// if (filterName) {
+//   tableData = tableData.filter((item) => {
+//     item.role.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+//       item.role.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1;
+//   });
 export default function Designation({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow }) {
   const theme = useTheme();
 
   const { role, status } = row;
 
   //   const { date, employee, dept, breakTime, hours, overtime, breakDuration, checkOut, checkIn } = row;
-  console.log(row);
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -56,56 +60,13 @@ export default function Designation({ row, selected, onSelectRow, onViewRow, onE
         <TableCell padding="checkbox" align="center">
           <Label
             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-            color={(status === 'Active' && 'success') || (status === 'not active' && 'warning') || 'default'}
+            color={(status === 'Active' && 'success') || (status === 'Inactive' && 'warning') || 'default'}
             sx={{ textTransform: 'capitalize' }}
           >
             {status}
           </Label>
         </TableCell>
-        {/* <TableCell padding="checkbox" align="center"></TableCell> */}
-        {/* 
-        <TableCell padding="checkbox" align="left">
-          <Stack direction="row" sx={{ alignItems: 'center' }}>
-            <img
-              src={img}
-              alt=""
-              style={{
-                borderRadius: '50%',
-                width: '50px',
-                marginRight: '.3rem',
-              }}
-            />
 
-            <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-              {employeeName}
-            </Typography>
-          </Stack>
-        </TableCell>
-        <TableCell padding="checkbox" align="center">
-          <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-            {email}
-          </Typography>
-        </TableCell>
-        <TableCell padding="checkbox" align="center">
-          <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-            {phone}
-          </Typography>
-        </TableCell>
-        <TableCell padding="checkbox" align="center">
-          <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-            {website}
-          </Typography>
-        </TableCell>
-        <TableCell padding="checkbox" align="center">
-          <Label
-            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-            color={(status === 'Active' && 'success') || (status === 'not active' && 'warning') || 'default'}
-            sx={{ textTransform: 'capitalize' }}
-          >
-            {status}
-          </Label>
-        </TableCell>
-        */}
         <TableCell align="right">
           <TableMoreMenu
             open={openMenu}

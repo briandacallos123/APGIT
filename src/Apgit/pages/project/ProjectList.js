@@ -45,9 +45,10 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 // dito rin
 import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
-// import Request from '../../components/Clients';
-// import Request from '../../components/Task/TaskList';
-import Request from '../../components/LeaveTables/LeaveRequest';
+// import ProjectListTable from '../../components/Clients';
+// import ProjectListTable from '../../components/Task/TaskList';
+// import ProjectListTable from '../../components/LeaveTables/LeaveProjectListTable';
+import ProjectListTable from '../../components/project/ProjectListTable';
 // import { roles } from '../../_mock/role';
 // ----------------------------------------------------------------------
 
@@ -351,7 +352,7 @@ export default function ProjectList() {
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <Request
+                    <ProjectListTable
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}
@@ -417,8 +418,11 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.projectName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.id.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.client.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.priority.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

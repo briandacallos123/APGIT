@@ -176,7 +176,7 @@ export default function InvoiceList() {
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Designation"
+          heading="List"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
             { name: 'Invoices', href: DASHBOARD.root },
@@ -411,8 +411,11 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.employeeName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.phone.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.website.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

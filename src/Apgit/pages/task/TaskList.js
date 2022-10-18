@@ -415,8 +415,10 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.employeeName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.assign.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.priority.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

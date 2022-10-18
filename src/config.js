@@ -69,7 +69,7 @@ export const defaultSettings = {
   themeContrast: 'default',
   themeLayout: 'horizontal',
   themeColorPresets: 'default',
-  themeStretch: false,
+  themeStretch: true,
 };
 
 // MULTI LANGUAGES

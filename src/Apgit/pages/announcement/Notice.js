@@ -28,8 +28,9 @@ import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
-// import { _type } from '../../../_mock';
-import { _type } from '../../../_mock/customTable/leave';
+// import { _Notice } from '../../../_mock';
+// import { _Notice } from '../../../_mock/customTable/leave';
+import { _Notice } from '../../../_mock/customTable/announcement';
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -41,7 +42,9 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 
-import Request from '../../components/LeaveTables/LeaveRequest';
+// import NoticeTable from '../../components/LeaveTables/LeaveNoticeTable';
+import NoticeTable from '../../components/announcement/Notice';
+
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
@@ -57,8 +60,8 @@ const TABLE_HEAD = [
   { id: 'Name', label: 'Date', align: 'left', width: 1000 },
   { id: 'Balance', label: 'Subject', align: 'center', width: 1000 },
   { id: 'Department', label: 'Department', align: 'center', width: 1000 },
-  { id: 'Start', label: 'Description', align: 'right', width: 1000 },
-  { id: 'End', label: 'File', align: 'right', width: 1000 },
+  { id: 'Start', label: 'Description', align: 'center', width: 1000 },
+  { id: 'End', label: 'File', align: 'center', width: 1000 },
   { id: 'Action', label: 'Action', align: 'right', width: 1000 },
   { id: '' },
 ];
@@ -91,7 +94,7 @@ export default function Notice() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_type);
+  const [tableData, setTableData] = useState(_Notice);
 
   const [filterName, setFilterName] = useState('');
 
@@ -192,7 +195,7 @@ export default function Notice() {
         />
 
         <Card sx={{ mb: 5 }}>
-          {/* <Scrollbar>
+          <Scrollbar>
             <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
@@ -239,11 +242,11 @@ export default function Notice() {
                 color={theme.palette.warning.secondary}
               />
             </Stack>
-          </Scrollbar> */}
+          </Scrollbar>
         </Card>
 
         <Card>
-          {/* <Tabs
+          <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
@@ -260,7 +263,7 @@ export default function Notice() {
                 label={tab.label}
               />
             ))}
-          </Tabs> */}
+          </Tabs>
 
           <Divider />
 
@@ -341,7 +344,7 @@ export default function Notice() {
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <Request
+                    <NoticeTable
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}
@@ -407,8 +410,9 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.subject.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.description.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.dept.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

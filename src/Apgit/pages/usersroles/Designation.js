@@ -42,20 +42,27 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 // dito rin
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { DesignationHeader } from '../../../sections/@dashboard/invoice/list';
+
+import DesignationHeader from '../../components/usernroles/DesignationHeader';
 import DesignationTable from '../../components/usernroles/Designation';
 
 // import { roles } from '../../_mock/role';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'Web Developert',
-  'Vendor Executive',
-  'UI UX Designer',
-  'Team Lead',
-  'Sr. Web Developer',
-];
+const SERVICE_OPTIONS = _customData.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.role)) {
+      arr.push(currentItem.role);
+    }
+
+    return arr;
+  },
+  ['all']
+);
+
+// get roles
+// const ewan =
 
 const TABLE_HEAD = [
   { id: 'invoiceNumber', label: 'Title', align: 'left', width: 1000 },
@@ -126,11 +133,11 @@ export default function InvoiceList() {
   };
 
   const handleEditRow = (id) => {
-    // navigate(DASHBOARD.invoice.new(id));
+    navigate(DASHBOARD.invoice.new(id));
   };
 
   const handleViewRow = (id) => {
-    // navigate(DASHBOARD.invoice.new(id));
+    navigate(DASHBOARD.invoice.new(id));
   };
 
   const dataFiltered = applySortFilter({
@@ -164,13 +171,20 @@ export default function InvoiceList() {
 
   const TABS = [
     { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'Active', label: 'Active', color: 'success', count: getLengthByStatus('paid') },
+    { value: 'Inactive', label: 'Inactive', color: 'warning', count: getLengthByStatus('unpaid') },
   ];
 
-  console.log(_customData);
+  const getActive = () => {
+    const newData = _customData.filter((item) => item.status === 'Active');
+    return newData.length;
+  };
+  const getInActive = () => {
+    const newData = _customData.filter((item) => item.status !== 'Active');
+    return newData.length;
+  };
+  getActive();
+
   return (
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
@@ -178,8 +192,8 @@ export default function InvoiceList() {
           heading="Designation"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
-            { name: 'Invoices', href: DASHBOARD.root },
-            { name: 'List' },
+            { name: 'Designation', href: DASHBOARD.root },
+            // { name: 'List' },
           ]}
           action={
             <Button
@@ -201,22 +215,22 @@ export default function InvoiceList() {
               sx={{ py: 2 }}
             >
               <InvoiceAnalytic
-                title="Total"
+                title="Active"
                 total={tableData.length}
                 percent={25}
                 price={sumBy(tableData, 'totalPrice')}
                 icon="ic:round-receipt"
-                color={theme.palette.error.main}
+                color={theme.palette.success.main}
               />
               <InvoiceAnalytic
-                title="Paid"
+                title="Not Active"
                 total={getLengthByStatus('paid')}
                 percent={getPercentByStatus('paid')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.warning.main}
               />
-              <InvoiceAnalytic
+              {/* <InvoiceAnalytic
                 title="Unpaid"
                 total={getLengthByStatus('unpaid')}
                 percent={getPercentByStatus('unpaid')}
@@ -239,7 +253,7 @@ export default function InvoiceList() {
                 price={getTotalPriceByStatus('draft')}
                 icon="eva:file-fill"
                 color={theme.palette.warning.secondary}
-              />
+              /> */}
             </Stack>
           </Scrollbar>
         </Card>
@@ -258,7 +272,14 @@ export default function InvoiceList() {
                 disableRipple
                 key={tab.value}
                 value={tab.value}
-                icon={<Label color={tab.color}> {tab.count} </Label>}
+                icon={
+                  <Label color={tab.color}>
+                    {' '}
+                    {(tab.label === 'All' && tab.count) ||
+                      (tab.label === 'Active' && getActive()) ||
+                      (tab.label === 'Inactive' && getInActive())}{' '}
+                  </Label>
+                }
                 label={tab.label}
               />
             ))}
@@ -266,7 +287,7 @@ export default function InvoiceList() {
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <DesignationHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
@@ -291,9 +312,8 @@ export default function InvoiceList() {
                   rowCount={tableData.length}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
-                      checked
-                      // nag comment ka dito
-                      // tableData.map((row) => row.id)
+                      checked,
+                      tableData.map((row) => row.id)
                     )
                   }
                   actions={
@@ -408,10 +428,11 @@ function applySortFilter({
   tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
+    tableData = stabilizedThis.map((el) => el[0]);
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.role.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 
@@ -420,7 +441,9 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    // tableData = tableData.filter((item) => item.role.some((c) => c.service === filterService));
+
+    tableData = tableData.filter((item) => item.role === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

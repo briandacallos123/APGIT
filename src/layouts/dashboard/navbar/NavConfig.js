@@ -148,10 +148,10 @@ const navConfig = [
             title: 'Transaction History',
             path: DASHBOARD.transaction,
           },
-          {
-            title: 'Account Settings',
-            path: DASHBOARD.accountsetting,
-          },
+          // {
+          //   title: 'Account Settings',
+          //   path: DASHBOARD.accountsetting,
+          // },
         ],
       },
       {
@@ -174,10 +174,10 @@ const navConfig = [
         path: DASHBOARD.taskcreate,
         icon: ICONS.task,
         children: [
-          {
-            title: 'Task Create',
-            path: DASHBOARD.taskcreate,
-          },
+          // {
+          //   title: 'Task Create',
+          //   path: DASHBOARD.taskcreate,
+          // },
           {
             title: 'List',
             path: DASHBOARD.tasklist,

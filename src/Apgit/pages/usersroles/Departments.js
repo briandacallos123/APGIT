@@ -43,22 +43,24 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 // dito rin
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { DesignationHeader } from '../../../sections/@dashboard/invoice/list';
 
+import DesignationHeader from '../../components/usernroles/DesignationHeader';
 import DepartmentTablesRow from '../../components/usernroles/Departments';
 
 // import { roles } from '../../_mock/role';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'Web Developert',
-  'Vendor Executive',
-  'UI UX Designer',
-  'Team Lead',
-  'Sr. Web Developer',
-];
+const SERVICE_OPTIONS = _customData.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.role)) {
+      arr.push(currentItem.role);
+    }
 
+    return arr;
+  },
+  ['all']
+);
 const TABLE_HEAD = [
   { id: 'invoiceNumber', label: 'Title', align: 'left', width: 1000 },
   { id: 'createDate', label: 'Employees', align: 'left', width: 1000 },
@@ -68,6 +70,14 @@ const TABLE_HEAD = [
   // { id: 'status', label: 'Status', align: 'left' },
   { id: '' },
 ];
+const getActive = () => {
+  const newData = _customData.filter((item) => item.status === 'Active');
+  return newData.length;
+};
+const getInActive = () => {
+  const newData = _customData.filter((item) => item.status !== 'Active');
+  return newData.length;
+};
 
 // ----------------------------------------------------------------------
 
@@ -169,10 +179,8 @@ export default function Departments() {
 
   const TABS = [
     { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'active', label: 'Active', color: 'success', count: getLengthByStatus('paid') },
+    { value: 'inactive', label: 'Inactive', color: 'warning', count: getLengthByStatus('unpaid') },
   ];
 
   // console.log(_customData);
@@ -211,39 +219,23 @@ export default function Departments() {
                 percent={25}
                 price={sumBy(tableData, 'totalPrice')}
                 icon="ic:round-receipt"
-                color={theme.palette.error.main}
+                color={theme.palette.primary.main}
               />
               <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
+                title="Active"
+                total={getActive()}
                 percent={getPercentByStatus('paid')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
-                color={theme.palette.warning.main}
+                color={theme.palette.success.main}
               />
               <InvoiceAnalytic
-                title="Unpaid"
-                total={getLengthByStatus('unpaid')}
+                title="Inactive"
+                total={getInActive()}
                 percent={getPercentByStatus('unpaid')}
                 price={getTotalPriceByStatus('unpaid')}
                 icon="eva:clock-fill"
-                color={theme.palette.success.main}
-              />
-              <InvoiceAnalytic
-                title="Overdue"
-                total={getLengthByStatus('overdue')}
-                percent={getPercentByStatus('overdue')}
-                price={getTotalPriceByStatus('overdue')}
-                icon="eva:bell-fill"
-                color={theme.palette.success.main}
-              />
-              <InvoiceAnalytic
-                title="Draft"
-                total={getLengthByStatus('draft')}
-                percent={getPercentByStatus('draft')}
-                price={getTotalPriceByStatus('draft')}
-                icon="eva:file-fill"
-                color={theme.palette.warning.secondary}
+                color={theme.palette.error.main}
               />
             </Stack>
           </Scrollbar>
@@ -271,7 +263,7 @@ export default function Departments() {
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <DesignationHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
@@ -415,17 +407,16 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.role.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
-
   if (filterStatus !== 'all') {
     tableData = tableData.filter((item) => item.status === filterStatus);
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.role === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

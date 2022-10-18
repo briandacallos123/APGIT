@@ -28,8 +28,9 @@ import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
-// import { _type } from '../../../_mock';
-import { _type } from '../../../_mock/customTable/leave';
+// import { _visit } from '../../../_mock';
+// import { _visit } from '../../../_mock/customTable/leave';
+import { _visit } from '../../../_mock/customTable/visit';
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -41,7 +42,8 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 
-import Request from '../../components/LeaveTables/LeaveRequest';
+// import VisitTable from '../../components/LeaveTables/LeaveVisitTable';
+import VisitTable from '../../components/visit/VisitTable';
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
@@ -57,10 +59,10 @@ const TABLE_HEAD = [
   { id: 'Name', label: 'Employee', align: 'left', width: 1000 },
   { id: 'Balance', label: 'Date', align: 'center', width: 1000 },
   { id: 'Department', label: 'Title', align: 'center', width: 1000 },
-  { id: 'Start', label: 'Description', align: 'right', width: 1000 },
-  { id: 'End', label: 'Cancellation Note', align: 'right', width: 1000 },
-  { id: 'File', label: 'File', align: 'right', width: 1000 },
-  { id: 'Status', label: 'Status', align: 'right', width: 1000 },
+  { id: 'Start', label: 'Description', align: 'center', width: 1000 },
+  { id: 'End', label: 'Cancellation Note', align: 'center', width: 1000 },
+  { id: 'File', label: 'File', align: 'center', width: 1000 },
+  { id: 'Status', label: 'Status', align: 'center', width: 1000 },
   { id: 'Action', label: 'Action', align: 'right', width: 1000 },
   { id: '' },
 ];
@@ -93,7 +95,7 @@ export default function ManageList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_type);
+  const [tableData, setTableData] = useState(_visit);
 
   const [filterName, setFilterName] = useState('');
 
@@ -175,7 +177,7 @@ export default function ManageList() {
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <HeaderBreadcrumbs
-          heading="Visit List"
+          heading="Manage"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
             { name: 'Invoices', href: DASHBOARD.root },
@@ -194,7 +196,7 @@ export default function ManageList() {
         />
 
         <Card sx={{ mb: 5 }}>
-          {/* <Scrollbar>
+          <Scrollbar>
             <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
@@ -241,11 +243,11 @@ export default function ManageList() {
                 color={theme.palette.warning.secondary}
               />
             </Stack>
-          </Scrollbar> */}
+          </Scrollbar>
         </Card>
 
         <Card>
-          {/* <Tabs
+          <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
@@ -262,7 +264,7 @@ export default function ManageList() {
                 label={tab.label}
               />
             ))}
-          </Tabs> */}
+          </Tabs>
 
           <Divider />
 
@@ -343,7 +345,7 @@ export default function ManageList() {
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <Request
+                    <VisitTable
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}
@@ -409,8 +411,11 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.title.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.description.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.cancellationNote.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

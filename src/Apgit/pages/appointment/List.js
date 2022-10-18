@@ -28,8 +28,9 @@ import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
-// import { _type } from '../../../_mock';
-import { _type } from '../../../_mock/customTable/leave';
+// import { _list } from '../../../_mock';
+// import { _list } from '../../../_mock/customTable/leave';
+import { _list } from '../../../_mock/customTable/appointment';
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -41,7 +42,8 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 
-import Request from '../../components/LeaveTables/LeaveRequest';
+// import AppoinmentTable from '../../components/LeaveTables/LeaveAppoinmentTable';
+import AppoinmentTable from '../../components/appointment';
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
@@ -57,11 +59,11 @@ const TABLE_HEAD = [
   { id: 'Name', label: 'Title', align: 'left', width: 1000 },
   { id: 'Balance', label: 'Appointment With', align: 'center', width: 1000 },
   { id: 'Department', label: 'Date', align: 'center', width: 1000 },
-  { id: 'Start', label: 'Start At', align: 'right', width: 1000 },
-  { id: 'End', label: 'End At', align: 'right', width: 1000 },
-  { id: 'Location', label: 'Location', align: 'right', width: 1000 },
-  { id: 'File', label: 'File', align: 'right', width: 1000 },
-  { id: 'Status', label: 'Status', align: 'right', width: 1000 },
+  { id: 'Start', label: 'Start At', align: 'center', width: 1000 },
+  { id: 'End', label: 'End At', align: 'center', width: 1000 },
+  { id: 'Location', label: 'Location', align: 'center', width: 1000 },
+  { id: 'File', label: 'File', align: 'center', width: 1000 },
+  { id: 'Status', label: 'Status', align: 'center', width: 1000 },
   { id: 'Action', label: 'Action', align: 'right', width: 1000 },
   { id: '' },
 ];
@@ -94,7 +96,7 @@ export default function List() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_type);
+  const [tableData, setTableData] = useState(_list);
 
   const [filterName, setFilterName] = useState('');
 
@@ -195,7 +197,7 @@ export default function List() {
         />
 
         <Card sx={{ mb: 5 }}>
-          {/* <Scrollbar>
+          <Scrollbar>
             <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
@@ -242,11 +244,11 @@ export default function List() {
                 color={theme.palette.warning.secondary}
               />
             </Stack>
-          </Scrollbar> */}
+          </Scrollbar>
         </Card>
 
         <Card>
-          {/* <Tabs
+          <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
@@ -263,7 +265,7 @@ export default function List() {
                 label={tab.label}
               />
             ))}
-          </Tabs> */}
+          </Tabs>
 
           <Divider />
 
@@ -344,7 +346,7 @@ export default function List() {
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <Request
+                    <AppoinmentTable
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}
@@ -410,8 +412,10 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.title.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.location.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.appointmentWith.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

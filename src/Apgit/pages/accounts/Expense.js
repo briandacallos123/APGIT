@@ -418,8 +418,11 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.category.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.amount.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.payment.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

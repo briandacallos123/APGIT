@@ -185,7 +185,7 @@ export default function Attendance() {
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <HeaderBreadcrumbs
-          heading="Leave Type"
+          heading="Attendance"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
             { name: 'Invoices', href: DASHBOARD.root },
@@ -420,8 +420,9 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.employee.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.dept.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.breakTime.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

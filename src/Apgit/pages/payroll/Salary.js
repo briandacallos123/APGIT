@@ -28,8 +28,9 @@ import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
-// import { _type } from '../../../_mock';
-import { _type } from '../../../_mock/customTable/leave';
+// import { _salary } from '../../../_mock';
+// import { _salary } from '../../../_mock/customTable/leave';
+import { _salary } from '../../../_mock/customTable/payroll/salary';
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -41,7 +42,10 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 
-import Request from '../../components/LeaveTables/LeaveRequest';
+// import SalaryTable from '../../components/LeaveTables/LeaveSalaryTable';
+import SalaryTable from '../../components/payroll/SalaryTable';
+
+// import SalaryTable from '../../components/LeaveTables/LeaveSalaryTable';
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
@@ -54,15 +58,15 @@ const SERVICE_OPTIONS = [
 ];
 
 const TABLE_HEAD = [
-  { id: 'invoiceNumber', label: 'Employee ID', align: 'left' },
-  { id: 'createDate', label: 'Name', align: 'center', width: 200 },
-  { id: 'Designation', label: 'Salary Type', align: 'right' },
-  { id: 'Department', label: 'Calculation', align: 'right' },
-  { id: 'Shift', label: 'Salary', align: 'right' },
-  { id: 'Basic Salary', label: 'Month', align: 'right' },
-  { id: 'Installment', label: 'Status', align: 'right' },
-  { id: 'Action', label: 'Action', align: 'right' },
-  // { id: '' },
+  { id: 'invoiceNumber', label: 'Employee ID', align: 'left', width: 1000 },
+  { id: 'createDate', label: 'Name', align: 'center', width: 1000 },
+  { id: 'Designation', label: 'Salary Type', align: 'center', width: 1000 },
+  { id: 'Department', label: 'Calculation', align: 'center', width: 1000 },
+  { id: 'Shift', label: 'Salary', align: 'right', width: 1000 },
+  { id: 'Basic Salary', label: 'Month', align: 'center', width: 1000 },
+  { id: 'Installment', label: 'Status', align: 'center', width: 1000 },
+  { id: 'Action', label: 'Action', align: 'right', width: 1000 },
+  { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -93,7 +97,7 @@ export default function Advance() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_type);
+  const [tableData, setTableData] = useState(_salary);
 
   const [filterName, setFilterName] = useState('');
 
@@ -175,7 +179,7 @@ export default function Advance() {
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <HeaderBreadcrumbs
-          heading="Type"
+          heading="Salary"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
             { name: 'Invoices', href: DASHBOARD.root },
@@ -194,7 +198,7 @@ export default function Advance() {
         />
 
         <Card sx={{ mb: 5 }}>
-          {/* <Scrollbar>
+          <Scrollbar>
             <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
@@ -241,11 +245,11 @@ export default function Advance() {
                 color={theme.palette.warning.secondary}
               />
             </Stack>
-          </Scrollbar> */}
+          </Scrollbar>
         </Card>
 
         <Card>
-          {/* <Tabs
+          <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
@@ -262,7 +266,7 @@ export default function Advance() {
                 label={tab.label}
               />
             ))}
-          </Tabs> */}
+          </Tabs>
 
           <Divider />
 
@@ -343,7 +347,7 @@ export default function Advance() {
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <Request
+                    <SalaryTable
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}
@@ -409,8 +413,12 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.empName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.salaryType.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.calculation.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.salary.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.month.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

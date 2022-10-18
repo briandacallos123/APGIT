@@ -15,7 +15,7 @@ import { salary } from './salary';
 import { balance, accountNumber, branchName, category, paymentMethod, reference } from './account';
 import { status } from './status';
 import { website } from './website';
-import { startDate } from './date';
+import { startDate, month } from './date';
 import { assignedTo } from './assigned';
 import { priority } from './priority';
 
@@ -31,10 +31,16 @@ const _leave = {
   phoneNumber: (index) => phoneNumber[index],
   website: (index) => website[index],
   assign: (index) => assignedTo[index],
+  boolean: (index) => boolean[index],
   company: (index) => company[index],
   priority: () => {
     const rand = Math.floor(Math.random() * 9);
     return priority[rand];
+  },
+  getMonth: () => {
+    const rand = Math.floor(Math.random() * 12);
+
+    return month[rand];
   },
   startDate: () => {
     const rand = Math.floor(Math.random() * 7);

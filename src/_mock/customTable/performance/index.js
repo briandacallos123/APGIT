@@ -33,3 +33,18 @@ export const _goal = [...Array(10)].map((_, index) => ({
   startDate: _leave.startDate(),
   endDate: _leave.startDate(),
 }));
+
+export const _competenceTypesData = [...Array(10)].map((_, index) => ({
+  id: _leave.id(index),
+  name: _leave.name.fullName(index),
+  status: _leave.status(),
+  img: _leave.image.avatar(index),
+}));
+
+export const _competencies = [...Array(10)].map((_, index) => ({
+  name: _leave.name.fullName(index),
+  company: _leave.company(index),
+  role: _leave.role(index),
+  status: _leave.status(),
+  isVerified: _leave.boolean(index),
+}));

@@ -29,8 +29,8 @@ import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // _mock_
 // import { _type } from '../../../_mock';
-// import { setup } from '../../../_mock/customTable/attendance/_attendace';
-import { setup } from '../../../_mock/customTable/payroll/setup';
+// import { AdvanceTable } from '../../../_mock/customTable/attendance/_attendace';
+import { advance } from '../../../_mock/customTable/payroll/advance';
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -43,8 +43,9 @@ import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalyti
 import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 // import TypeTable from '../../components/LeaveTables/TypeTables';
 // import Assign from '../../components/LeaveTables/AssignLeave';
-// import Setup from '../../components/Attendance/Attendance';
-import Setup from '../../components/payroll/Setup';
+// import AdvanceTable from '../../components/Attendance/Attendance';
+// import AdvanceTable from '../../components/payroll/AdvanceTable';
+import AdvanceTable from '../../components/payroll/AdvanceTable';
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
@@ -96,7 +97,7 @@ export default function Advance() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(setup);
+  const [tableData, setTableData] = useState(advance);
 
   const [filterName, setFilterName] = useState('');
 
@@ -178,7 +179,7 @@ export default function Advance() {
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <HeaderBreadcrumbs
-          heading="Type"
+          heading="Advance"
           links={[
             { name: 'Dashboard', href: DASHBOARD.root },
             { name: 'Invoices', href: DASHBOARD.root },
@@ -343,7 +344,7 @@ export default function Advance() {
 
                 <TableBody>
                   {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <Setup
+                    <AdvanceTable
                       key={row.id}
                       row={row}
                       selected={selected.includes(row.id)}
@@ -409,8 +410,14 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.id.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.employee.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.department.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.empName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.role.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.salary.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.shift.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.status.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 
