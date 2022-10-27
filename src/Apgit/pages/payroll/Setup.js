@@ -40,21 +40,23 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { DesignationHeader } from '../../../sections/@dashboard/invoice/list';
 // import TypeTable from '../../components/LeaveTables/TypeTables';
 // import Assign from '../../components/LeaveTables/AssignLeave';
 // import Setup from '../../components/Attendance/Attendance';
 import Setup from '../../components/payroll/Setup';
+import DesignationHeader from '../../components/usernroles/DesignationHeader';
 // ----------------------------------------------------------------------
+const SERVICE_OPTIONS = setup.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.role)) {
+      arr.push(currentItem.role);
+    }
 
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
+    return arr;
+  },
+  ['all']
+);
 
 const TABLE_HEAD = [
   { id: 'invoiceNumber', label: 'Employee ID', width: 1000 },
@@ -166,12 +168,29 @@ export default function Attendance() {
 
   const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
 
+  const getActive = () => {
+    const newData = setup.filter((item) => item.status === 'Active');
+    return newData.length;
+  };
+  const getInActive = () => {
+    const newData = setup.filter((item) => item.status !== 'Active');
+    return newData.length;
+  };
+  const getDay = () => {
+    const newData = setup.filter((item) => item.shift === 'Day');
+    return newData.length;
+  };
+  const getNight = () => {
+    const newData = setup.filter((item) => item.shift === 'Night');
+    return newData.length;
+  };
+
   const TABS = [
     { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'Active', label: 'Active', color: 'success', count: getActive() },
+    { value: 'Inactive', label: 'Inactive', color: 'warning', count: getInActive() },
+    { value: 'Day', label: 'Day', color: 'error', count: getDay() },
+    { value: 'Night', label: 'Night', color: 'default', count: getNight() },
   ];
 
   return (
@@ -197,7 +216,7 @@ export default function Attendance() {
         />
 
         <Card sx={{ mb: 5 }}>
-          {/* <Scrollbar>
+          <Scrollbar>
             <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
@@ -212,43 +231,27 @@ export default function Attendance() {
                 color={theme.palette.error.main}
               />
               <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
+                title="Active"
+                total={getActive()}
                 percent={getPercentByStatus('paid')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
-                title="Unpaid"
-                total={getLengthByStatus('unpaid')}
+                title="Inactive"
+                total={getInActive()}
                 percent={getPercentByStatus('unpaid')}
                 price={getTotalPriceByStatus('unpaid')}
                 icon="eva:clock-fill"
-                color={theme.palette.success.main}
-              />
-              <InvoiceAnalytic
-                title="Overdue"
-                total={getLengthByStatus('overdue')}
-                percent={getPercentByStatus('overdue')}
-                price={getTotalPriceByStatus('overdue')}
-                icon="eva:bell-fill"
-                color={theme.palette.success.main}
-              />
-              <InvoiceAnalytic
-                title="Draft"
-                total={getLengthByStatus('draft')}
-                percent={getPercentByStatus('draft')}
-                price={getTotalPriceByStatus('draft')}
-                icon="eva:file-fill"
-                color={theme.palette.warning.secondary}
+                color={theme.palette.grey.main}
               />
             </Stack>
-          </Scrollbar> */}
+          </Scrollbar>
         </Card>
 
         <Card>
-          {/* <Tabs
+          <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
@@ -265,11 +268,11 @@ export default function Attendance() {
                 label={tab.label}
               />
             ))}
-          </Tabs> */}
+          </Tabs>
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <DesignationHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
@@ -418,11 +421,11 @@ function applySortFilter({
   }
 
   if (filterStatus !== 'all') {
-    tableData = tableData.filter((item) => item.status === filterStatus);
+    tableData = tableData.filter((item) => item.status === filterStatus || item.shift === filterStatus);
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.role === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

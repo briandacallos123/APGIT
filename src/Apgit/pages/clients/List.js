@@ -42,19 +42,23 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 // dito rin
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { ClientHeader } from '../../../sections/@dashboard/invoice/list';
 import ClientsTable from '../../components/Clients';
+import ClientHeader from '../../components/Clients/ClientHeader';
+
 // import { roles } from '../../_mock/role';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'Web Developert',
-  'Vendor Executive',
-  'UI UX Designer',
-  'Team Lead',
-  'Sr. Web Developer',
-];
+const SERVICE_OPTIONS = _clients.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.branch)) {
+      arr.push(currentItem.branch);
+    }
+
+    return arr;
+  },
+  ['all']
+);
 
 const TABLE_HEAD = [
   { id: 'invoiceNumber', label: 'Name', align: 'left', width: 1000 },
@@ -164,13 +168,22 @@ export default function InvoiceList() {
 
   const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
 
-  // const TABS = [
-  //   { value: 'all', label: 'All', color: 'info', count: tableData.length },
-  //   { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-  //   { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-  //   { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-  //   { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
-  // ];
+  const getActive = () => {
+    const newData = _clients.filter((item) => item.status === 'Active');
+    return newData.length;
+  };
+  const getInActive = () => {
+    const newData = _clients.filter((item) => item.status !== 'Active');
+    return newData.length;
+  };
+
+  const TABS = [
+    { value: 'all', label: 'All', color: 'info', count: tableData.length },
+    { value: 'Active', label: 'Active', color: 'success', count: getActive() },
+    { value: 'Inactive', label: 'Inactive', color: 'warning', count: getInActive() },
+    // { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
+    // { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+  ];
 
   return (
     <Page title="Invoice: List">
@@ -196,7 +209,7 @@ export default function InvoiceList() {
 
         <Card sx={{ mb: 5 }}>
           <Scrollbar>
-            {/* <Stack
+            <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
               sx={{ py: 2 }}
@@ -210,22 +223,22 @@ export default function InvoiceList() {
                 color={theme.palette.error.main}
               />
               <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
+                title="Active"
+                total={getActive()}
                 percent={getPercentByStatus('paid')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
-                title="Unpaid"
-                total={getLengthByStatus('unpaid')}
+                title="Inactive"
+                total={getInActive()}
                 percent={getPercentByStatus('unpaid')}
                 price={getTotalPriceByStatus('unpaid')}
                 icon="eva:clock-fill"
                 color={theme.palette.success.main}
               />
-              <InvoiceAnalytic
+              {/* <InvoiceAnalytic
                 title="Overdue"
                 total={getLengthByStatus('overdue')}
                 percent={getPercentByStatus('overdue')}
@@ -240,13 +253,13 @@ export default function InvoiceList() {
                 price={getTotalPriceByStatus('draft')}
                 icon="eva:file-fill"
                 color={theme.palette.warning.secondary}
-              />
-            </Stack> */}
+              /> */}
+            </Stack>
           </Scrollbar>
         </Card>
 
         <Card>
-          {/* <Tabs
+          <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
@@ -263,17 +276,17 @@ export default function InvoiceList() {
                 label={tab.label}
               />
             ))}
-          </Tabs> */}
+          </Tabs>
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <ClientHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
             filterEndDate={filterEndDate}
             onFilterName={handleFilterName}
-            // onFilterService={handleFilterService}
+            onFilterService={handleFilterService}
             onFilterStartDate={(newValue) => {
               setFilterStartDate(newValue);
             }}

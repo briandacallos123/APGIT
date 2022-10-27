@@ -40,23 +40,25 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { SalaryHeader } from '../../../sections/@dashboard/invoice/list';
 
 // import SalaryTable from '../../components/LeaveTables/LeaveSalaryTable';
 import SalaryTable from '../../components/payroll/SalaryTable';
+import SalaryHeader from '../../components/payroll/SalaryHeader';
 
 // import SalaryTable from '../../components/LeaveTables/LeaveSalaryTable';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
+const SERVICE_OPTIONS = _salary.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.salaryType)) {
+      arr.push(currentItem.salaryType);
+    }
 
+    return arr;
+  },
+  ['all']
+);
 const TABLE_HEAD = [
   { id: 'invoiceNumber', label: 'Employee ID', align: 'left', width: 1000 },
   { id: 'createDate', label: 'Name', align: 'center', width: 1000 },
@@ -167,12 +169,21 @@ export default function Advance() {
 
   const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
 
+  const getActive = () => {
+    const newData = _salary.filter((item) => item.status === 'Active');
+    return newData.length;
+  };
+  const getInActive = () => {
+    const newData = _salary.filter((item) => item.status !== 'Active');
+    return newData.length;
+  };
+
   const TABS = [
     { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'Active', label: 'Active', color: 'success', count: getActive() },
+    { value: 'Inactive', label: 'Inactive', color: 'warning', count: getInActive() },
+    // { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
+    // { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
   ];
 
   return (
@@ -213,7 +224,7 @@ export default function Advance() {
                 color={theme.palette.error.main}
               />
               <InvoiceAnalytic
-                title="Paid"
+                title="Active"
                 total={getLengthByStatus('paid')}
                 percent={getPercentByStatus('paid')}
                 price={getTotalPriceByStatus('paid')}
@@ -221,14 +232,14 @@ export default function Advance() {
                 color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
-                title="Unpaid"
+                title="Inactive"
                 total={getLengthByStatus('unpaid')}
                 percent={getPercentByStatus('unpaid')}
                 price={getTotalPriceByStatus('unpaid')}
                 icon="eva:clock-fill"
                 color={theme.palette.success.main}
               />
-              <InvoiceAnalytic
+              {/* <InvoiceAnalytic
                 title="Overdue"
                 total={getLengthByStatus('overdue')}
                 percent={getPercentByStatus('overdue')}
@@ -243,7 +254,7 @@ export default function Advance() {
                 price={getTotalPriceByStatus('draft')}
                 icon="eva:file-fill"
                 color={theme.palette.warning.secondary}
-              />
+              /> */}
             </Stack>
           </Scrollbar>
         </Card>
@@ -270,7 +281,7 @@ export default function Advance() {
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <SalaryHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
@@ -427,7 +438,7 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.salaryType === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

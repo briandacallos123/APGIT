@@ -46,15 +46,16 @@ import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 import SupportTable from '../../components/Support/SupportTable';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
+const SERVICE_OPTIONS = _ticket.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.subject)) {
+      arr.push(currentItem.subject);
+    }
 
+    return arr;
+  },
+  ['all']
+);
 const TABLE_HEAD = [
   { id: 'Name', label: 'Date', align: 'left', width: 1000 },
   { id: 'Balance', label: 'Code', align: 'center', width: 1000 },
@@ -65,6 +66,15 @@ const TABLE_HEAD = [
   { id: 'Action', label: 'Action', align: 'right', width: 1000 },
   { id: '' },
 ];
+
+const optionContent = () => {
+  return [
+    { set: 'yes', textContent: 'Subject' },
+    { set: 'no', textContent: '' },
+    { set: 'no', textContent: '' },
+    { set: 'yes', textContent: 'Search title or description...' },
+  ];
+};
 
 // ----------------------------------------------------------------------
 
@@ -164,12 +174,21 @@ export default function Tickets() {
 
   const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
 
+  //  const getActive = () => {
+  //    const newData = _travelType.filter((item) => item.status === 'Active');
+  //    return newData.length;
+  //  };
+  //  const getInActive = () => {
+  //    const newData = _travelType.filter((item) => item.status !== 'Active');
+  //    return newData.length;
+  //  };
+
   const TABS = [
     { value: 'all', label: 'Account', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Amount', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Type', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
+    // { value: 'paid', label: 'Amount', color: 'success', count: getLengthByStatus('paid') },
+    // { value: 'unpaid', label: 'Type', color: 'warning', count: getLengthByStatus('unpaid') },
+    // { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
+    // { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
   ];
 
   return (
@@ -209,7 +228,7 @@ export default function Tickets() {
                 icon="ic:round-receipt"
                 color={theme.palette.error.main}
               />
-              <InvoiceAnalytic
+              {/* <InvoiceAnalytic
                 title="Paid"
                 total={getLengthByStatus('paid')}
                 percent={getPercentByStatus('paid')}
@@ -240,7 +259,7 @@ export default function Tickets() {
                 price={getTotalPriceByStatus('draft')}
                 icon="eva:file-fill"
                 color={theme.palette.warning.secondary}
-              />
+              /> */}
             </Stack>
           </Scrollbar>
         </Card>
@@ -281,6 +300,7 @@ export default function Tickets() {
               setFilterEndDate(newValue);
             }}
             optionsService={SERVICE_OPTIONS}
+            optionContent={optionContent}
           />
 
           <Scrollbar>
@@ -423,7 +443,7 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.subject === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

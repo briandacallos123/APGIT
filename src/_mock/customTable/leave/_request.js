@@ -10,8 +10,8 @@ export const _request = [...Array(10)].map((_, index) => ({
   date: _leave.date(),
   available: _leave.days(index + 2),
   subtitute: _leave.name.fullName(index + 5),
-  managerApprove: _leave.approve(),
-  hrApprove: _leave.approve(),
+  managerApprove: 'mnapprove',
+  hrApprove: 'hrapprove',
   file: 'no file',
-  status: 'Active',
+  status: _leave.status(),
 }));

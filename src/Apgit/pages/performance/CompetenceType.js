@@ -41,20 +41,23 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { CompetenceHeader } from '../../../sections/@dashboard/invoice/list';
 
 // import CompetenceType from '../../components/LeaveTables/LeaveCompetenceType';
 import CompetenceTypeTable from '../../components/Performance/CompetenceType';
+import CompetenceHeader from '../../components/Performance/CompetenceHeader';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
+const SERVICE_OPTIONS = _competenceTypesData.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.status)) {
+      arr.push(currentItem.status);
+    }
+
+    return arr;
+  },
+  ['all']
+);
 
 const TABLE_HEAD = [
   { id: 'Name', label: 'ID', align: 'left', width: 1000 },
@@ -162,12 +165,21 @@ export default function CompetenceType() {
 
   const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
 
+  const getActive = () => {
+    const newData = _competenceTypesData.filter((item) => item.status === 'Active');
+    return newData.length;
+  };
+  const getInActive = () => {
+    const newData = _competenceTypesData.filter((item) => item.shift !== 'Active');
+    return newData.length;
+  };
+
   const TABS = [
     { value: 'all', label: 'Account', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Amount', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Type', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'Active', label: 'Active', color: 'success', count: getActive() },
+    { value: 'Inactive', label: 'Inactive', color: 'warning', count: getInActive() },
+    // { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
+    // { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
   ];
 
   return (
@@ -201,21 +213,29 @@ export default function CompetenceType() {
             >
               <InvoiceAnalytic
                 title="Total"
-                total={tableData.length}
+                total={getActive()}
                 percent={25}
                 price={sumBy(tableData, 'totalPrice')}
                 icon="ic:round-receipt"
                 color={theme.palette.error.main}
               />
               <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
+                title="Active"
+                total={getActive()}
                 percent={getPercentByStatus('paid')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
+                title="Inactive"
+                total={getInActive()}
+                percent={getPercentByStatus('paid')}
+                price={getTotalPriceByStatus('paid')}
+                icon="eva:checkmark-circle-2-fill"
+                color={theme.palette.warning.main}
+              />
+              {/* <InvoiceAnalytic
                 title="Unpaid"
                 total={getLengthByStatus('unpaid')}
                 percent={getPercentByStatus('unpaid')}
@@ -238,7 +258,7 @@ export default function CompetenceType() {
                 price={getTotalPriceByStatus('draft')}
                 icon="eva:file-fill"
                 color={theme.palette.warning.secondary}
-              />
+              /> */}
             </Stack>
           </Scrollbar>
         </Card>
@@ -265,7 +285,7 @@ export default function CompetenceType() {
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <CompetenceHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
@@ -419,7 +439,7 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.status === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

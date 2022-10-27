@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Stack, InputAdornment, TextField, MenuItem } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -30,85 +31,96 @@ export default function InvoiceTableToolbar({
   onFilterService,
   onFilterStartDate,
   onFilterEndDate,
+  optionContent,
 }) {
+  const [contentData, setContentData] = useState(optionContent);
+
   return (
     <Stack spacing={3} direction={{ xs: 'column', md: 'row' }} sx={{ py: 2.5, px: 3 }}>
-      <TextField
-        fullWidth
-        select
-        label="Designation Type   "
-        value={filterService}
-        onChange={onFilterService}
-        SelectProps={{
-          MenuProps: {
-            sx: { '& .MuiPaper-root': { maxHeight: 260 } },
-          },
-        }}
-        sx={{
-          maxWidth: { md: INPUT_WIDTH },
-          textTransform: 'capitalize',
-        }}
-      >
-        {optionsService.map((option) => (
-          <MenuItem
-            key={option}
-            value={option}
-            sx={{
-              mx: 1,
-              my: 0.5,
-              borderRadius: 0.75,
-              typography: 'body2',
-              textTransform: 'capitalize',
-            }}
-          >
-            {option}
-          </MenuItem>
-        ))}
-      </TextField>
+      {contentData[0].set === 'yes' && (
+        <TextField
+          fullWidth
+          select
+          label={contentData[0].textContent}
+          value={filterService}
+          onChange={onFilterService}
+          SelectProps={{
+            MenuProps: {
+              sx: { '& .MuiPaper-root': { maxHeight: 260 } },
+            },
+          }}
+          sx={{
+            maxWidth: { md: INPUT_WIDTH },
+            textTransform: 'capitalize',
+          }}
+        >
+          {optionsService.map((option) => (
+            <MenuItem
+              key={option}
+              value={option}
+              sx={{
+                mx: 1,
+                my: 0.5,
+                borderRadius: 0.75,
+                typography: 'body2',
+                textTransform: 'capitalize',
+              }}
+            >
+              {option}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
 
-      <DatePicker
-        label="Start date"
-        value={filterStartDate}
-        onChange={onFilterStartDate}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            fullWidth
-            sx={{
-              maxWidth: { md: INPUT_WIDTH },
-            }}
-          />
-        )}
-      />
+      {contentData[1].set === 'yes' && (
+        <DatePicker
+          label="Start date"
+          value={filterStartDate}
+          onChange={onFilterStartDate}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              fullWidth
+              sx={{
+                maxWidth: { md: INPUT_WIDTH },
+              }}
+            />
+          )}
+        />
+      )}
 
-      <DatePicker
-        label="End date"
-        value={filterEndDate}
-        onChange={onFilterEndDate}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            fullWidth
-            sx={{
-              maxWidth: { md: INPUT_WIDTH },
-            }}
-          />
-        )}
-      />
+      {contentData[2].set === 'yes' && (
+        <DatePicker
+          label="End date"
+          value={filterEndDate}
+          onChange={onFilterEndDate}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              fullWidth
+              sx={{
+                maxWidth: { md: INPUT_WIDTH },
+              }}
+            />
+          )}
+        />
+      )}
 
-      <TextField
-        fullWidth
-        value={filterName}
-        onChange={(event) => onFilterName(event.target.value)}
-        placeholder="Search client or invoice number..."
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Iconify icon={'eva:search-fill'} sx={{ color: 'text.disabled', width: 20, height: 20 }} />
-            </InputAdornment>
-          ),
-        }}
-      />
+      {contentData[3].set === 'yes' && (
+        <TextField
+          fullWidth
+          value={filterName}
+          onChange={(event) => onFilterName(event.target.value)}
+          placeholder={contentData[3].textContent}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Iconify icon={'eva:search-fill'} sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+              </InputAdornment>
+            ),
+          }}
+        />
+      )}
     </Stack>
   );
 }

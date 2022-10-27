@@ -40,10 +40,12 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { AppointmentHeader } from '../../../sections/@dashboard/invoice/list';
 
 // import AppoinmentTable from '../../components/LeaveTables/LeaveAppoinmentTable';
 import AppoinmentTable from '../../components/appointment';
+import AppointmentHeader from '../../components/appointment/AppointmentHeader';
+
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
@@ -135,6 +137,15 @@ export default function List() {
 
   const handleViewRow = (id) => {
     // navigate(DASHBOARD.invoice.new(id));
+  };
+
+  const optionContent = () => {
+    return [
+      { set: 'yes', textContent: 'Designation' },
+      { set: 'no', textContent: '' },
+      { set: 'no', textContent: '' },
+      { set: 'yes', textContent: 'Search client...' },
+    ];
   };
 
   const dataFiltered = applySortFilter({
@@ -269,7 +280,7 @@ export default function List() {
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <AppointmentHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
@@ -283,6 +294,7 @@ export default function List() {
               setFilterEndDate(newValue);
             }}
             optionsService={SERVICE_OPTIONS}
+            optionContent={optionContent()}
           />
 
           <Scrollbar>

@@ -61,6 +61,15 @@ const SERVICE_OPTIONS = [
   'Sr. Web Developer',
 ];
 
+const optionContent = () => {
+  return [
+    { set: 'yes', textContent: 'Title' },
+    { set: 'no', textContent: '' },
+    { set: 'no', textContent: '' },
+    { set: 'yes', textContent: 'Search title or description...' },
+  ];
+};
+
 const TABLE_HEAD = [
   { id: 'Name', label: 'Project Name', align: 'left', width: 1000 },
   { id: 'Balance', label: 'Client', align: 'center', width: 1000 },
@@ -288,6 +297,7 @@ export default function ProjectList() {
               setFilterEndDate(newValue);
             }}
             optionsService={SERVICE_OPTIONS}
+            optionContent={optionContent}
           />
 
           <Scrollbar>

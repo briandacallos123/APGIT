@@ -18,6 +18,29 @@ InvoiceAnalytic.propTypes = {
 };
 
 export default function InvoiceAnalytic({ title, total, icon, color, percent, price }) {
+  const getTitle = (tt) => {
+    let text = '';
+    switch (tt) {
+      case 'Total':
+        text = 'Overall';
+        break;
+      case 'Active':
+        text = 'active users';
+        break;
+      case 'Inactive':
+        text = 'Inactive users';
+        break;
+      case 'Day':
+        text = 'Day shift';
+        break;
+      case 'Night':
+        text = 'Night shift';
+        break;
+      default:
+    }
+    return text;
+  };
+
   return (
     <Stack direction="row" alignItems="center" justifyContent="center" sx={{ width: 1, minWidth: 200 }}>
       <Stack alignItems="center" justifyContent="center" sx={{ position: 'relative' }}>
@@ -40,13 +63,9 @@ export default function InvoiceAnalytic({ title, total, icon, color, percent, pr
         <Typography variant="subtitle2">
           {fShortenNumber(total)}{' '}
           <Box component="span" sx={{ color: 'text.secondary', typography: 'body2' }}>
-            invoices
+            {getTitle(title)}
           </Box>
         </Typography>
-
-        {/* <Typography variant="subtitle2" sx={{ color }}>
-          {fCurrency(price)}
-        </Typography> */}
       </Stack>
     </Stack>
   );

@@ -9,5 +9,5 @@ export const _transaction = [...Array(10)].map((_, index) => ({
   date: _leave.startDate(),
   status: _leave.status(),
   img: _leave.image.avatar(index),
-  type: 'Type 1',
+  type: `Type ${index}`,
 }));

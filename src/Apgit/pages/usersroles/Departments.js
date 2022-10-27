@@ -179,8 +179,8 @@ export default function Departments() {
 
   const TABS = [
     { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'active', label: 'Active', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'inactive', label: 'Inactive', color: 'warning', count: getLengthByStatus('unpaid') },
+    { value: 'Active', label: 'Active', color: 'success', count: getLengthByStatus('paid') },
+    { value: 'Inactive', label: 'Inactive', color: 'warning', count: getLengthByStatus('unpaid') },
   ];
 
   // console.log(_customData);
@@ -216,15 +216,15 @@ export default function Departments() {
               <InvoiceAnalytic
                 title="Total"
                 total={tableData.length}
-                percent={25}
+                percent={100}
                 price={sumBy(tableData, 'totalPrice')}
                 icon="ic:round-receipt"
-                color={theme.palette.primary.main}
+                color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
                 title="Active"
                 total={getActive()}
-                percent={getPercentByStatus('paid')}
+                percent={getPercentByStatus('Active')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.success.main}
@@ -232,7 +232,7 @@ export default function Departments() {
               <InvoiceAnalytic
                 title="Inactive"
                 total={getInActive()}
-                percent={getPercentByStatus('unpaid')}
+                percent={getPercentByStatus('Inactive')}
                 price={getTotalPriceByStatus('unpaid')}
                 icon="eva:clock-fill"
                 color={theme.palette.error.main}
@@ -255,7 +255,14 @@ export default function Departments() {
                 disableRipple
                 key={tab.value}
                 value={tab.value}
-                icon={<Label color={tab.color}> {tab.count} </Label>}
+                icon={
+                  <Label color={tab.color}>
+                    {' '}
+                    {(tab.label === 'All' && tab.count) ||
+                      (tab.label === 'Active' && getActive()) ||
+                      (tab.label === 'Inactive' && getInActive())}{' '}
+                  </Label>
+                }
                 label={tab.label}
               />
             ))}
@@ -269,7 +276,7 @@ export default function Departments() {
             filterStartDate={filterStartDate}
             filterEndDate={filterEndDate}
             onFilterName={handleFilterName}
-            // onFilterService={handleFilterService}
+            onFilterService={handleFilterService}
             onFilterStartDate={(newValue) => {
               setFilterStartDate(newValue);
             }}

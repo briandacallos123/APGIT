@@ -40,20 +40,23 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { AwardListHeader } from '../../../sections/@dashboard/invoice/list';
 
 // import ListAward from '../../components/LeaveTables/LeaveListAward';
 import ListAward from '../../components/awards/awardList';
+import AwardListHeader from '../../components/awards/AwardListHeader';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
+const SERVICE_OPTIONS = _awardList.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.awardType)) {
+      arr.push(currentItem.awardType);
+    }
+
+    return arr;
+  },
+  ['all']
+);
 
 const TABLE_HEAD = [
   { id: 'Name', label: 'ID', align: 'left', width: 1000 },
@@ -163,13 +166,20 @@ export default function AwardList() {
     );
 
   const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
-
+  const getActive = () => {
+    const newData = _awardList.filter((item) => item.status === 'Active');
+    return newData.length;
+  };
+  const getInActive = () => {
+    const newData = _awardList.filter((item) => item.status !== 'Active');
+    return newData.length;
+  };
   const TABS = [
     { value: 'all', label: 'Account', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Amount', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Type', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'Active', label: 'Active', color: 'success', count: getActive() },
+    { value: 'Inactive', label: 'Inactive', color: 'warning', count: getInActive() },
+    // { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
+    // { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
   ];
 
   return (
@@ -210,22 +220,22 @@ export default function AwardList() {
                 color={theme.palette.error.main}
               />
               <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
+                title="Active"
+                total={getActive()}
                 percent={getPercentByStatus('paid')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
-                title="Unpaid"
-                total={getLengthByStatus('unpaid')}
+                title="Inactive"
+                total={getActive()}
                 percent={getPercentByStatus('unpaid')}
                 price={getTotalPriceByStatus('unpaid')}
                 icon="eva:clock-fill"
                 color={theme.palette.success.main}
               />
-              <InvoiceAnalytic
+              {/* <InvoiceAnalytic
                 title="Overdue"
                 total={getLengthByStatus('overdue')}
                 percent={getPercentByStatus('overdue')}
@@ -240,7 +250,7 @@ export default function AwardList() {
                 price={getTotalPriceByStatus('draft')}
                 icon="eva:file-fill"
                 color={theme.palette.warning.secondary}
-              />
+              /> */}
             </Stack>
           </Scrollbar>
         </Card>
@@ -267,7 +277,7 @@ export default function AwardList() {
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <AwardListHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
@@ -424,7 +434,7 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.awardType === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

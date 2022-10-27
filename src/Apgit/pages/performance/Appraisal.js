@@ -40,20 +40,23 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { AppraisalHeader } from '../../../sections/@dashboard/invoice/list';
 
 // import AppraisalTable from '../../components/LeaveTables/LeaveAppraisalTable';
 import AppraisalTable from '../../components/Performance/AppraisalTable';
+import AppraisalHeader from '../../components/Performance/AppraisalHeader';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
+const SERVICE_OPTIONS = _appraisal.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.designation)) {
+      arr.push(currentItem.designation);
+    }
+
+    return arr;
+  },
+  ['all']
+);
 
 const TABLE_HEAD = [
   { id: 'Name', label: 'Title', align: 'left', width: 1000 },
@@ -167,10 +170,10 @@ export default function Appraisal() {
 
   const TABS = [
     { value: 'all', label: 'Account', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Amount', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Type', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
+    // { value: 'paid', label: 'Amount', color: 'success', count: getLengthByStatus('paid') },
+    // { value: 'unpaid', label: 'Type', color: 'warning', count: getLengthByStatus('unpaid') },
+    // { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
+    // { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
   ];
 
   return (
@@ -205,42 +208,10 @@ export default function Appraisal() {
               <InvoiceAnalytic
                 title="Total"
                 total={tableData.length}
-                percent={25}
+                percent={100}
                 price={sumBy(tableData, 'totalPrice')}
                 icon="ic:round-receipt"
                 color={theme.palette.error.main}
-              />
-              <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
-                percent={getPercentByStatus('paid')}
-                price={getTotalPriceByStatus('paid')}
-                icon="eva:checkmark-circle-2-fill"
-                color={theme.palette.warning.main}
-              />
-              <InvoiceAnalytic
-                title="Unpaid"
-                total={getLengthByStatus('unpaid')}
-                percent={getPercentByStatus('unpaid')}
-                price={getTotalPriceByStatus('unpaid')}
-                icon="eva:clock-fill"
-                color={theme.palette.success.main}
-              />
-              <InvoiceAnalytic
-                title="Overdue"
-                total={getLengthByStatus('overdue')}
-                percent={getPercentByStatus('overdue')}
-                price={getTotalPriceByStatus('overdue')}
-                icon="eva:bell-fill"
-                color={theme.palette.success.main}
-              />
-              <InvoiceAnalytic
-                title="Draft"
-                total={getLengthByStatus('draft')}
-                percent={getPercentByStatus('draft')}
-                price={getTotalPriceByStatus('draft')}
-                icon="eva:file-fill"
-                color={theme.palette.warning.secondary}
               />
             </Stack>
           </Scrollbar>
@@ -268,7 +239,7 @@ export default function Appraisal() {
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <AppraisalHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
@@ -425,7 +396,7 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.designation === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

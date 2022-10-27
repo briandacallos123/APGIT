@@ -46,14 +46,16 @@ import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
 import GoalTable from '../../components/Performance/GoalTable';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
+const SERVICE_OPTIONS = _goal.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.subject)) {
+      arr.push(currentItem.subject);
+    }
+
+    return arr;
+  },
+  ['all']
+);
 
 const TABLE_HEAD = [
   { id: 'Name', label: 'Goal Type', align: 'left', width: 1000 },
@@ -146,6 +148,15 @@ export default function Goal() {
     filterEndDate,
   });
 
+  const optionContent = () => {
+    return [
+      { set: 'yes', textContent: 'Title' },
+      { set: 'no', textContent: '' },
+      { set: 'no', textContent: '' },
+      { set: 'yes', textContent: 'Search title or description...' },
+    ];
+  };
+
   const isNotFound =
     (!dataFiltered.length && !!filterName) ||
     (!dataFiltered.length && !!filterStatus) ||
@@ -167,10 +178,10 @@ export default function Goal() {
 
   const TABS = [
     { value: 'all', label: 'Account', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Amount', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Type', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
+    // { value: 'paid', label: 'Amount', color: 'success', count: getLengthByStatus('paid') },
+    // { value: 'unpaid', label: 'Type', color: 'warning', count: getLengthByStatus('unpaid') },
+    // { value: 'overdue', label: 'Date', color: 'error', count: getLengthByStatus('overdue') },
+    // { value: 'draft', label: 'Status', color: 'default', count: getLengthByStatus('draft') },
   ];
 
   return (
@@ -210,7 +221,7 @@ export default function Goal() {
                 icon="ic:round-receipt"
                 color={theme.palette.error.main}
               />
-              <InvoiceAnalytic
+              {/* <InvoiceAnalytic
                 title="Paid"
                 total={getLengthByStatus('paid')}
                 percent={getPercentByStatus('paid')}
@@ -241,7 +252,7 @@ export default function Goal() {
                 price={getTotalPriceByStatus('draft')}
                 icon="eva:file-fill"
                 color={theme.palette.warning.secondary}
-              />
+              /> */}
             </Stack>
           </Scrollbar>
         </Card>
@@ -282,6 +293,7 @@ export default function Goal() {
               setFilterEndDate(newValue);
             }}
             optionsService={SERVICE_OPTIONS}
+            optionContent={optionContent}
           />
 
           <Scrollbar>
@@ -424,7 +436,7 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.subject === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

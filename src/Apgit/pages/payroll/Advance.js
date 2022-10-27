@@ -40,22 +40,25 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../../components/table';
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { DesignationHeader } from '../../../sections/@dashboard/invoice/list';
 // import TypeTable from '../../components/LeaveTables/TypeTables';
 // import Assign from '../../components/LeaveTables/AssignLeave';
 // import AdvanceTable from '../../components/Attendance/Attendance';
 // import AdvanceTable from '../../components/payroll/AdvanceTable';
 import AdvanceTable from '../../components/payroll/AdvanceTable';
+import DesignationHeader from '../../components/usernroles/DesignationHeader';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
+const SERVICE_OPTIONS = advance.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.role)) {
+      arr.push(currentItem.role);
+    }
+
+    return arr;
+  },
+  ['all']
+);
 
 const TABLE_HEAD = [
   { id: 'invoiceNumber', label: 'Employee ID', width: 1000 },
@@ -166,13 +169,19 @@ export default function Advance() {
     );
 
   const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
+  const getActive = () => {
+    const newData = advance.filter((item) => item.status === 'Active');
+    return newData.length;
+  };
+  const getInActive = () => {
+    const newData = advance.filter((item) => item.status !== 'Active');
+    return newData.length;
+  };
 
   const TABS = [
     { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'Active', label: 'Active', color: 'success', count: getActive() },
+    { value: 'Inactive', label: 'Inactive', color: 'warning', count: getInActive() },
   ];
 
   return (
@@ -198,7 +207,7 @@ export default function Advance() {
         />
 
         <Card sx={{ mb: 5 }}>
-          {/* <Scrollbar>
+          <Scrollbar>
             <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
@@ -213,22 +222,22 @@ export default function Advance() {
                 color={theme.palette.error.main}
               />
               <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
+                title="Active"
+                total={getActive()}
                 percent={getPercentByStatus('paid')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
-                title="Unpaid"
-                total={getLengthByStatus('unpaid')}
+                title="Inactive"
+                total={getInActive()}
                 percent={getPercentByStatus('unpaid')}
                 price={getTotalPriceByStatus('unpaid')}
                 icon="eva:clock-fill"
-                color={theme.palette.success.main}
+                color={theme.palette.grey.main}
               />
-              <InvoiceAnalytic
+              {/* <InvoiceAnalytic
                 title="Overdue"
                 total={getLengthByStatus('overdue')}
                 percent={getPercentByStatus('overdue')}
@@ -243,13 +252,13 @@ export default function Advance() {
                 price={getTotalPriceByStatus('draft')}
                 icon="eva:file-fill"
                 color={theme.palette.warning.secondary}
-              />
+              /> */}
             </Stack>
-          </Scrollbar> */}
+          </Scrollbar>
         </Card>
 
         <Card>
-          {/* <Tabs
+          <Tabs
             allowScrollButtonsMobile
             variant="scrollable"
             scrollButtons="auto"
@@ -266,11 +275,11 @@ export default function Advance() {
                 label={tab.label}
               />
             ))}
-          </Tabs> */}
+          </Tabs>
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <DesignationHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
@@ -426,7 +435,7 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.role === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

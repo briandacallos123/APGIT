@@ -72,7 +72,7 @@ export default function DepartmentsTable({ row, selected, onSelectRow, onViewRow
       <TableCell padding="checkbox" align="center">
         <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-          color={(status === 'Active' && 'success') || (status === 'not active' && 'warning') || 'default'}
+          color={(status === 'Active' && 'success') || (status === 'Inactive' && 'warning') || 'default'}
           sx={{ textTransform: 'capitalize' }}
         >
           {status}

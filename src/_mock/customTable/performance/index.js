@@ -47,4 +47,6 @@ export const _competencies = [...Array(10)].map((_, index) => ({
   role: _leave.role(index),
   status: _leave.status(),
   isVerified: _leave.boolean(index),
+  id: _leave.id(index),
+  img: _leave.image.avatar(index),
 }));

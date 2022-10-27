@@ -12,7 +12,7 @@ export const _travelList = [...Array(10)].map((_, index) => ({
   id: _leave.id(index),
   name: _leave.name.fullName(index),
   img: _leave.image.avatar(index),
-  awardType: 'Type 1',
+  awardType: `Type ${index}`,
   place: 'Place 1',
   amount: _leave.salary(),
   date: _leave.startDate(),

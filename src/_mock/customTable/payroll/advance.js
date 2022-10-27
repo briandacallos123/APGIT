@@ -8,7 +8,7 @@ export const advance = [...Array(10)].map((_, index) => ({
   dept: _leave.dept(index),
   shift: _leave.shift(),
   salary: _leave.salary(),
-  status: 'Active',
+  status: _leave.status(),
   role: _leave.role(index),
   department: `Department ${index}`,
 }));

@@ -44,23 +44,26 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 // dito rin
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { TransactionHeader } from '../../../sections/@dashboard/invoice/list';
 
 // import AccountList from '../../components/LeaveTables/AccountLists';
 // import Transaction from '../../components/Accounts/Deposit';
 import Transaction from '../../components/Accounts/TransactionHistory';
+import TransactionHeader from '../../components/Accounts/TransactionHeader';
 
 // import { roles } from '../../_mock/role';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'Web Developert',
-  'Vendor Executive',
-  'UI UX Designer',
-  'Team Lead',
-  'Sr. Web Developer',
-];
+const SERVICE_OPTIONS = _transaction.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.type)) {
+      arr.push(currentItem.type);
+    }
+
+    return arr;
+  },
+  ['all']
+);
 
 const TABLE_HEAD = [
   { id: 'Name', label: 'Account', align: 'left', width: 1000 },
@@ -170,12 +173,21 @@ export default function Deposit() {
 
   const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
 
+  const getActive = () => {
+    const newData = _transaction.filter((item) => item.status === 'Active');
+    return newData.length;
+  };
+  const getInActive = () => {
+    const newData = _transaction.filter((item) => item.status !== 'Active');
+    return newData.length;
+  };
+
   const TABS = [
     { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'Active', label: 'Active', color: 'success', count: getActive() },
+    { value: 'Inactive', label: 'Inactive', color: 'warning', count: getInActive() },
+    // { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
+    // { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
   ];
 
   // console.log(_type);
@@ -217,36 +229,20 @@ export default function Deposit() {
                 color={theme.palette.error.main}
               />
               <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
+                title="Active"
+                total={getActive()}
                 percent={getPercentByStatus('paid')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
-                title="Unpaid"
-                total={getLengthByStatus('unpaid')}
+                title="Inactive"
+                total={getInActive()}
                 percent={getPercentByStatus('unpaid')}
                 price={getTotalPriceByStatus('unpaid')}
                 icon="eva:clock-fill"
                 color={theme.palette.success.main}
-              />
-              <InvoiceAnalytic
-                title="Overdue"
-                total={getLengthByStatus('overdue')}
-                percent={getPercentByStatus('overdue')}
-                price={getTotalPriceByStatus('overdue')}
-                icon="eva:bell-fill"
-                color={theme.palette.success.main}
-              />
-              <InvoiceAnalytic
-                title="Draft"
-                total={getLengthByStatus('draft')}
-                percent={getPercentByStatus('draft')}
-                price={getTotalPriceByStatus('draft')}
-                icon="eva:file-fill"
-                color={theme.palette.warning.secondary}
               />
             </Stack>
           </Scrollbar>
@@ -274,13 +270,13 @@ export default function Deposit() {
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <TransactionHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
             filterEndDate={filterEndDate}
             onFilterName={handleFilterName}
-            // onFilterService={handleFilterService}
+            onFilterService={handleFilterService}
             onFilterStartDate={(newValue) => {
               setFilterStartDate(newValue);
             }}
@@ -430,7 +426,7 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.type === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

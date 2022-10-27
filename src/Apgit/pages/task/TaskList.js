@@ -57,6 +57,14 @@ const SERVICE_OPTIONS = [
   'Team Lead',
   'Sr. Web Developer',
 ];
+const optionContent = () => {
+  return [
+    { set: 'yes', textContent: 'Title' },
+    { set: 'yes', textContent: '' },
+    { set: 'yes', textContent: '' },
+    { set: 'yes', textContent: 'Search title or description...' },
+  ];
+};
 
 const TABLE_HEAD = [
   { id: 'ID', label: 'ID', align: 'left', width: 4000 },
@@ -285,6 +293,7 @@ export default function InvoiceList() {
               setFilterEndDate(newValue);
             }}
             optionsService={SERVICE_OPTIONS}
+            optionContent={optionContent}
           />
 
           <Scrollbar>

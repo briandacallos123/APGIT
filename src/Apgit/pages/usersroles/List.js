@@ -42,19 +42,23 @@ import { TableNoData, TableEmptyRows, TableHeadCustom, TableSelectedActions } fr
 // sections
 import InvoiceAnalytic from '../../../sections/@dashboard/invoice/InvoiceAnalytic';
 // dito rin
-import { InvoiceTableToolbar } from '../../../sections/@dashboard/invoice/list';
+// import { DesignationHeader } from '../../../sections/@dashboard/invoice/list';
 import UsersListTableRow from '../../components/UserListTableRow';
+import DesignationHeader from '../../components/usernroles/DesignationHeader';
+
 // import { roles } from '../../_mock/role';
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'Web Developert',
-  'Vendor Executive',
-  'UI UX Designer',
-  'Team Lead',
-  'Sr. Web Developer',
-];
+const SERVICE_OPTIONS = _userData.reduce(
+  (arr, currentItem) => {
+    if (!arr.includes(currentItem.role)) {
+      arr.push(currentItem.role);
+    }
+
+    return arr;
+  },
+  ['all']
+);
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left', width: 1000 },
@@ -138,6 +142,25 @@ export default function InvoiceList() {
     // navigate(DASHBOARD.invoice.new(id));
   };
 
+  const getActive = () => {
+    const newData = _userData.filter((item) => item.status === 'Active');
+    return newData.length;
+  };
+  const getInActive = () => {
+    const newData = _userData.filter((item) => item.status !== 'Active');
+    return newData.length;
+  };
+
+  const getDayShift = () => {
+    const newData = _userData.filter((item) => item.shift === 'Day');
+    return newData.length;
+  };
+  // night shift
+  const getNightShift = () => {
+    const newData = _userData.filter((item) => item.shift !== 'Day');
+    return newData.length;
+  };
+
   const dataFiltered = applySortFilter({
     tableData,
     comparator: getComparator(order, orderBy),
@@ -157,7 +180,8 @@ export default function InvoiceList() {
 
   const denseHeight = dense ? 56 : 76;
 
-  const getLengthByStatus = (status) => tableData.filter((item) => item.status === status).length;
+  const getLengthByStatus = (status) =>
+    tableData.filter((item) => item.status === status || item.shift === status).length;
 
   const getTotalPriceByStatus = (status) =>
     sumBy(
@@ -169,13 +193,13 @@ export default function InvoiceList() {
 
   const TABS = [
     { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'Active', label: 'Active', color: 'success', count: getActive() },
+    { value: 'Inactive', label: 'Inactive', color: 'warning', count: getInActive() },
+    { value: 'Day', label: 'Day', color: 'info', count: getDayShift() },
+    { value: 'Night', label: 'Night', color: 'error', count: getLengthByStatus('unpaid') },
   ];
 
-  // console.log(_customData);
+  // console.log(_userData);
   return (
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -208,42 +232,42 @@ export default function InvoiceList() {
               <InvoiceAnalytic
                 title="Total"
                 total={tableData.length}
-                percent={25}
+                percent={100}
                 price={sumBy(tableData, 'totalPrice')}
                 icon="ic:round-receipt"
-                color={theme.palette.error.main}
-              />
-              <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
-                percent={getPercentByStatus('paid')}
-                price={getTotalPriceByStatus('paid')}
-                icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
-                title="Unpaid"
-                total={getLengthByStatus('unpaid')}
-                percent={getPercentByStatus('unpaid')}
+                title="Active"
+                total={getActive()}
+                percent={getPercentByStatus('Active')}
+                price={getTotalPriceByStatus('paid')}
+                icon="eva:checkmark-circle-2-fill"
+                color={theme.palette.success.main}
+              />
+              <InvoiceAnalytic
+                title="Inactive"
+                total={getInActive()}
+                percent={getPercentByStatus('Inactive')}
                 price={getTotalPriceByStatus('unpaid')}
                 icon="eva:clock-fill"
-                color={theme.palette.success.main}
+                color={theme.palette.error.main}
               />
               <InvoiceAnalytic
-                title="Overdue"
-                total={getLengthByStatus('overdue')}
-                percent={getPercentByStatus('overdue')}
-                price={getTotalPriceByStatus('overdue')}
-                icon="eva:bell-fill"
-                color={theme.palette.success.main}
+                title="Day"
+                total={getDayShift()}
+                percent={getPercentByStatus('Day')}
+                price={getTotalPriceByStatus('unpaid')}
+                icon="eva:clock-fill"
+                color={theme.palette.secondary.main}
               />
               <InvoiceAnalytic
-                title="Draft"
-                total={getLengthByStatus('draft')}
-                percent={getPercentByStatus('draft')}
-                price={getTotalPriceByStatus('draft')}
-                icon="eva:file-fill"
-                color={theme.palette.warning.secondary}
+                title="Night"
+                total={getNightShift()}
+                percent={getPercentByStatus('Night')}
+                price={getTotalPriceByStatus('unpaid')}
+                icon="eva:clock-fill"
+                color={theme.palette.grey.main}
               />
             </Stack>
           </Scrollbar>
@@ -271,13 +295,13 @@ export default function InvoiceList() {
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <DesignationHeader
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
             filterEndDate={filterEndDate}
             onFilterName={handleFilterName}
-            // onFilterService={handleFilterService}
+            onFilterService={handleFilterService}
             onFilterStartDate={(newValue) => {
               setFilterStartDate(newValue);
             }}
@@ -427,11 +451,11 @@ function applySortFilter({
   }
 
   if (filterStatus !== 'all') {
-    tableData = tableData.filter((item) => item.status === filterStatus);
+    tableData = tableData.filter((item) => item.status === filterStatus || item.shift === filterStatus);
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.role === filterService);
   }
 
   if (filterStartDate && filterEndDate) {

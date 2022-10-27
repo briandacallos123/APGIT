@@ -15,6 +15,6 @@ export const setup = [...Array(10)].map((_, index) => ({
   overtime: _leave.num(index + 2),
   shift: _leave.shift(),
   salary: _leave.salary(),
-  status: 'Active',
+  status: _leave.status(),
   role: _leave.role(index),
 }));

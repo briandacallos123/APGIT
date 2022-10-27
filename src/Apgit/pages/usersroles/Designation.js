@@ -61,6 +61,15 @@ const SERVICE_OPTIONS = _customData.reduce(
   ['all']
 );
 
+const getActive = () => {
+  const newData = _customData.filter((item) => item.status === 'Active');
+  return newData.length;
+};
+const getInActive = () => {
+  const newData = _customData.filter((item) => item.status !== 'Active');
+  return newData.length;
+};
+
 // get roles
 // const ewan =
 
@@ -183,7 +192,6 @@ export default function InvoiceList() {
     const newData = _customData.filter((item) => item.status !== 'Active');
     return newData.length;
   };
-  getActive();
 
   return (
     <Page title="Invoice: List">
@@ -215,20 +223,28 @@ export default function InvoiceList() {
               sx={{ py: 2 }}
             >
               <InvoiceAnalytic
-                title="Active"
+                title="Total"
                 total={tableData.length}
-                percent={25}
+                percent={100}
+                price={sumBy(tableData, 'totalPrice')}
+                icon="ic:round-receipt"
+                color={theme.palette.warning.main}
+              />
+              <InvoiceAnalytic
+                title="Active"
+                total={getActive()}
+                percent={getPercentByStatus('Active')}
                 price={sumBy(tableData, 'totalPrice')}
                 icon="ic:round-receipt"
                 color={theme.palette.success.main}
               />
               <InvoiceAnalytic
                 title="Not Active"
-                total={getLengthByStatus('paid')}
-                percent={getPercentByStatus('paid')}
+                total={getInActive()}
+                percent={getPercentByStatus('Inactive')}
                 price={getTotalPriceByStatus('paid')}
                 icon="eva:checkmark-circle-2-fill"
-                color={theme.palette.warning.main}
+                color={theme.palette.error.main}
               />
               {/* <InvoiceAnalytic
                 title="Unpaid"
@@ -441,8 +457,6 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    // tableData = tableData.filter((item) => item.role.some((c) => c.service === filterService));
-
     tableData = tableData.filter((item) => item.role === filterService);
   }
 
